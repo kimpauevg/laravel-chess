@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Builders\ChessGameBuilder;
+use App\Models\ChessGame;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->app->bind(ChessGameBuilder::class, function () {
+            return (new ChessGame())->newQuery();
+        });
     }
 }

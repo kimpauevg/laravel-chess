@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChessController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::group(['prefix' => 'chess'], function () {
+    Route::get('/', [ChessController::class, 'index'])->name('chess.index');
 });

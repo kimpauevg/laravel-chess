@@ -1,0 +1,32 @@
+body {
+    font-family: 'Nunito', sans-serif;
+    background: #4f525b;
+    color: #c6cdcf;
+}
+
+.container-center {
+    max-width: 400px;
+    margin: 10% auto 0;
+    padding: 20px;
+}
+
+.pt-400px {
+    padding-top: 400px;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.panel-filled {
+    background: #5f626b;
+}
+
+.panel {
+    padding: 1em;
+}
+
+a:hover {
+    color: #ffdc7f;
+    text-decoration: underline;
+}
