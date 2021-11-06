@@ -17,4 +17,9 @@ class ChessGameFactory extends Factory
             'name' => $this->faker->word
         ];
     }
+
+    public function hasPieces(ChessGamePieceFactory $factory): self
+    {
+        return $this->has($factory, 'pieces');
+    }
 }

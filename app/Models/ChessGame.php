@@ -8,16 +8,21 @@ use App\Models\Builders\ChessGameBuilder;
 use App\Models\Collections\ChessGameCollection;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
  * @property string $name
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ *
+ * @property ChessGamePiece[] $pieces
  */
 class ChessGame extends Model
 {
-    protected string $table = 'chess_games';
+    public const TABLE = 'chess_games';
+
+    protected string $table = self::TABLE;
 
     public function newEloquentBuilder($query): ChessGameBuilder
     {
@@ -27,5 +32,10 @@ class ChessGame extends Model
     public function newCollection(array $models = []): ChessGameCollection
     {
         return new ChessGameCollection($models);
+    }
+
+    public function pieces(): HasMany
+    {
+        return $this->hasMany(ChessGamePiece::class, 'chess_game_id', 'id');
     }
 }

@@ -14,10 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::pattern('id', '\d+');
 
-Route::group(['prefix' => 'chess'], function () {
-    Route::get('/', [ChessController::class, 'index'])->name('chess.index');
+Route::get('/', [ChessController::class, 'index'])->name('chess-games.index');
+
+Route::group(['prefix' => 'chess-games'], function () {
+    Route::get('/{id}', [ChessController::class, 'show'])->name('chess-games.show');
+    Route::post('/', [ChessController::class, 'store'])->name('chess-games.store');
 });

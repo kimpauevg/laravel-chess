@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app->bind(ChessGameBuilder::class, function () {
-            return (new ChessGame())->newQuery();
+            return app(ChessGame::class)->newQuery();
         });
     }
 }
