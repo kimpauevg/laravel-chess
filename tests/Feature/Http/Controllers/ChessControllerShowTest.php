@@ -16,7 +16,7 @@ class ChessControllerShowTest extends TestCase
         ChessGameFactory::new(['id' => 1, 'name' => 'Test Game'])
             ->hasPieces(
                 ChessGamePieceFactory::new([
-                        'name' => ChessPieceDictionary::ROOK,
+                        'name'  => ChessPieceDictionary::ROOK,
                         'color' => ChessPieceDictionary::COLOR_LIGHT,
                 ])
             )

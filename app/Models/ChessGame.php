@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Models\Builders\ChessGameBuilder;
 use App\Models\Collections\ChessGameCollection;
+use App\Models\Collections\ChessGamePieceCollection;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *
- * @property ChessGamePiece[] $pieces
+ * @property ChessGamePieceCollection|ChessGamePiece[] $pieces
  */
 class ChessGame extends Model
 {

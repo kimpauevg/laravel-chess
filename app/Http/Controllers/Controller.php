@@ -18,8 +18,8 @@ class Controller extends BaseController
     {
         return [
             'current_page' => $paginator->currentPage(),
-            'last_page' => $paginator->lastPage(),
-            'per_page'  => $paginator->perPage(),
+            'last_page'    => $paginator->lastPage(),
+            'per_page'     => $paginator->perPage(),
         ];
     }
 }

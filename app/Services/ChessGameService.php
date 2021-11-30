@@ -8,8 +8,10 @@ use App\Dictionaries\ChessPieces\ChessPieceDictionary;
 use App\Models\Builders\ChessGameBuilder;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
+use App\Services\ValueObjects\Collections\CoordinateCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\ValidationException;
 
 class ChessGameService
 {
@@ -37,6 +39,50 @@ class ChessGameService
         $this->storeDefaultPiecesForGame($game);
 
         return $game;
+    }
+
+    public function getPossibleMovesForChessPieceById(int $game_id, int $chess_piece_id): CoordinateCollection
+    {
+        $game = $this->getGameById($game_id);
+
+        $chess_piece = $game->pieces->findOrFail($chess_piece_id);
+
+        $resolver = new ChessPieceMoveResolver($chess_piece, $game->pieces);
+
+        return $resolver->getPossibleMovesCoordinates();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function makeMove(int $id, int $chess_piece_id, array $coordinates): void
+    {
+        $game = $this->getGameById($id);
+
+        $chess_piece = $game->pieces->findOrFail($chess_piece_id);
+
+        $resolver = new ChessPieceMoveResolver($chess_piece, $game->pieces);
+
+        $moves = $resolver->getPossibleMovesCoordinates();
+
+        $coordinate_x = Arr::get($coordinates, 'x');
+        $coordinate_y = Arr::get($coordinates, 'y');
+
+        $move_is_impossible = $moves
+            ->where('x', $coordinate_x)
+            ->where('y', $coordinate_y)
+            ->count() === 0;
+
+        if ($move_is_impossible) {
+            throw ValidationException::withMessages([
+                'coordinates' => 'Move is not allowed',
+            ]);
+        }
+
+        $chess_piece->coordinate_x = $coordinate_x;
+        $chess_piece->coordinate_y = $coordinate_y;
+
+        $chess_piece->save();
     }
 
     private function storeDefaultPiecesForGame(ChessGame $game): void

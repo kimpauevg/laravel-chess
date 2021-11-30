@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Builders\ChessGamePieceBuilder;
+use App\Models\Collections\ChessGamePieceCollection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -18,4 +20,14 @@ class ChessGamePiece extends Model
 {
     public const TABLE = 'chess_game_pieces';
     protected string $table = self::TABLE;
+
+    public function newCollection(array $models = []): ChessGamePieceCollection
+    {
+        return new ChessGamePieceCollection($models);
+    }
+
+    public function newEloquentBuilder($query): ChessGamePieceBuilder
+    {
+        return new ChessGamePieceBuilder($query);
+    }
 }

@@ -10,7 +10,7 @@ use App\Models\Collections\ChessGameCollection;
 
 class ChessGameFormatter
 {
-    public function collectionToList(ChessGameCollection $collection): array
+    public function formatCollection(ChessGameCollection $collection): array
     {
         $result = [];
 
@@ -24,7 +24,7 @@ class ChessGameFormatter
         return $result;
     }
 
-    public function oneWithPieces(ChessGame $game): array
+    public function formatOneWithPieces(ChessGame $game): array
     {
         $result = $this->getGameAttributes($game);
 
@@ -55,8 +55,8 @@ class ChessGameFormatter
                 'x' => $piece->coordinate_x,
                 'y' => $piece->coordinate_y,
             ],
-            'chess_piece' => $piece->name,
-            'color'       => $piece->color,
+            'name'  => $piece->name,
+            'color' => $piece->color,
         ];
     }
 }
