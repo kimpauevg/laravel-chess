@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Dictionaries\ChessPieces\ChessPieceDictionary;
+use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\Models\Collections\ChessGamePieceCollection;
 use App\Services\ValueObjects\Collections\CoordinateCollection;
@@ -15,10 +16,10 @@ class ChessPieceMoveResolver
     private ChessGamePiece $piece;
     private ChessGamePieceCollection $all_pieces;
 
-    public function __construct(ChessGamePiece $piece, ChessGamePieceCollection $all_pieces)
+    public function __construct(ChessGamePiece $piece, ChessGame $game)
     {
         $this->piece = $piece;
-        $this->all_pieces = $all_pieces;
+        $this->all_pieces = $game->pieces;
     }
 
     public function getPossibleMovesCoordinates(): CoordinateCollection

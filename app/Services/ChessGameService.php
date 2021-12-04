@@ -47,7 +47,7 @@ class ChessGameService
 
         $chess_piece = $game->pieces->findOrFail($chess_piece_id);
 
-        $resolver = new ChessPieceMoveResolver($chess_piece, $game->pieces);
+        $resolver = new ChessPieceMoveResolver($chess_piece, $game);
 
         return $resolver->getPossibleMovesCoordinates();
     }
@@ -61,7 +61,7 @@ class ChessGameService
 
         $chess_piece = $game->pieces->findOrFail($chess_piece_id);
 
-        $resolver = new ChessPieceMoveResolver($chess_piece, $game->pieces);
+        $resolver = new ChessPieceMoveResolver($chess_piece, $game);
 
         $moves = $resolver->getPossibleMovesCoordinates();
 

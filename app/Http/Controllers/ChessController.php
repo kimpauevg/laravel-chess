@@ -49,7 +49,7 @@ class ChessController extends Controller
     /**
      * @throws ValidationException
      */
-    public function moveChessPiece(
+    public function movePiece(
         int $id,
         int $chess_piece_id,
         MakeMoveRequest $request,

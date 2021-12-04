@@ -22,6 +22,13 @@ class ChessPieceDictionary
         COLOR_LIGHT = 'light'
     ;
 
+    public const
+        MIN_COORDINATE_X = 1,
+        MAX_COORDINATE_X = 8,
+        MIN_COORDINATE_Y = 1,
+        MAX_COORDINATE_Y = 8
+    ;
+
     public function getStartingPiecesCollection(): ChessPieceCollection
     {
         $light_pawns = [];

@@ -24,7 +24,7 @@ Route::group(['prefix' => 'chess-games'], function () {
     Route::get('/{id}', [ChessController::class, 'show'])->name('chess-games.show');
     Route::post('/', [ChessController::class, 'store'])->name('chess-games.store');
 
-    Route::post('/{id}/piece/{chess_piece_id}/move', [ChessController::class, 'moveChessPiece'])
+    Route::post('/{id}/piece/{chess_piece_id}/move', [ChessController::class, 'movePiece'])
         ->name('chess-games.move-chess-piece');
 
     Route::group(['prefix' => 'ajax'], function () {

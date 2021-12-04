@@ -6,8 +6,6 @@ namespace Tests\Unit\Services\ChessPieceMoveResolver;
 
 use App\Dictionaries\ChessPieces\ChessPieceDictionary;
 use App\Models\ChessGamePiece;
-use App\Models\Collections\ChessGamePieceCollection;
-use App\Services\ChessPieceMoveResolver;
 
 class PawnResolveTest extends AbstractResolveTest
 {
@@ -15,7 +13,7 @@ class PawnResolveTest extends AbstractResolveTest
     {
         $piece = $this->makeLightPawnWithCoordinates(4, 2);
 
-        $resolver = new ChessPieceMoveResolver($piece, new ChessGamePieceCollection());
+        $resolver = $this->makeResolverForEmptyTable($piece);
 
         $collection = $resolver->getPossibleMovesCoordinates();
 
@@ -42,7 +40,7 @@ class PawnResolveTest extends AbstractResolveTest
     {
         $piece = $this->makeLightPawnWithCoordinates(4, 3);
 
-        $resolver = new ChessPieceMoveResolver($piece, new ChessGamePieceCollection());
+        $resolver = $this->makeResolverForEmptyTable($piece);
 
         $collection = $resolver->getPossibleMovesCoordinates();
 
@@ -68,7 +66,7 @@ class PawnResolveTest extends AbstractResolveTest
     {
         $piece = $this->makeDarkPawnWithCoordinates(4, 7);
 
-        $resolver = new ChessPieceMoveResolver($piece, new ChessGamePieceCollection());
+        $resolver = $this->makeResolverForEmptyTable($piece);
 
         $collection = $resolver->getPossibleMovesCoordinates();
 
@@ -95,7 +93,7 @@ class PawnResolveTest extends AbstractResolveTest
     {
         $piece = $this->makeDarkPawnWithCoordinates(4, 6);
 
-        $resolver = new ChessPieceMoveResolver($piece, new ChessGamePieceCollection());
+        $resolver = $this->makeResolverForEmptyTable($piece);
 
         $collection = $resolver->getPossibleMovesCoordinates();
 

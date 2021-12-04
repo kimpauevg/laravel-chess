@@ -15,7 +15,7 @@ class KnightResolveTest extends AbstractResolveTest
     {
         $piece = $this->makeLightKnightWithCoordinates(4, 4);
 
-        $resolver = new ChessPieceMoveResolver($piece, new ChessGamePieceCollection());
+        $resolver = $this->makeResolverForEmptyTable($piece);
 
         $collection = $resolver->getPossibleMovesCoordinates();
         /**
@@ -47,7 +47,7 @@ class KnightResolveTest extends AbstractResolveTest
     {
         $piece = $this->makeLightKnightWithCoordinates(1, 1);
 
-        $resolver = new ChessPieceMoveResolver($piece, new ChessGamePieceCollection());
+        $resolver = $this->makeResolverForEmptyTable($piece);
 
         $collection = $resolver->getPossibleMovesCoordinates();
 

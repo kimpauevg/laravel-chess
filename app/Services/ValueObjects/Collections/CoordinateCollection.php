@@ -12,4 +12,20 @@ use Illuminate\Support\Collection;
  */
 class CoordinateCollection extends Collection
 {
+    public function subtractCollection(CoordinateCollection $collection): self
+    {
+        return $this->filter(function (Coordinates $coordinates) use ($collection) {
+            return $collection->whereX($coordinates->x)->whereY($coordinates->y)->count() === 0;
+        });
+    }
+
+    public function whereX(int $coordinate): self
+    {
+        return $this->where('x', $coordinate);
+    }
+
+    public function whereY(int $coordinate): self
+    {
+        return $this->where('y', $coordinate);
+    }
 }
