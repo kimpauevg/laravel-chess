@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace App\Services\ChessPieceMoveCalculators;
 
 use App\Dictionaries\ChessPieces\ChessPieceDictionary;
+use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\Services\ValueObjects\Collections\CoordinateCollection;
 use App\Services\ValueObjects\Coordinates;
 
 class RookMoveCalculator extends AbstractChessPieceMoveCalculator
 {
-    public function calculateMovesForPiece(ChessGamePiece $piece): CoordinateCollection
+    public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): CoordinateCollection
     {
+        $this->setGamePieces($game);
+
         $collection = new CoordinateCollection();
 
         for ($coordinate_x = $piece->coordinate_x + 1; $coordinate_x <= ChessPieceDictionary::MAX_COORDINATE_X; $coordinate_x++) {

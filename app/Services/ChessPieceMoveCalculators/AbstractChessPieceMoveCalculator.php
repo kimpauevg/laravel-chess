@@ -15,13 +15,12 @@ abstract class AbstractChessPieceMoveCalculator
     protected ChessGame $game;
     protected ChessGamePieceCollection $all_pieces;
 
-    public function __construct(ChessGame $game)
-    {
-        $this->game = $game;
-        $this->all_pieces = $this->game->pieces;
-    }
+    abstract public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): CoordinateCollection;
 
-    abstract public function calculateMovesForPiece(ChessGamePiece $piece): CoordinateCollection;
+    protected function setGamePieces(ChessGame $game): void
+    {
+        $this->all_pieces = $game->pieces;
+    }
 
     protected function isCoordinateInvalid(Coordinates $coordinates): bool
     {
@@ -59,8 +58,8 @@ abstract class AbstractChessPieceMoveCalculator
         return !is_null($this->getChessPieceWithCoordinates($coordinates));
     }
 
-    protected function getChessPieceWithCoordinates(Coordinates $coordinate): ?ChessGamePiece
+    protected function getChessPieceWithCoordinates(Coordinates $coordinates): ?ChessGamePiece
     {
-        return $this->all_pieces->whereCoordinateX($coordinate->x)->whereCoordinateY($coordinate->y)->first();
+        return $this->all_pieces->whereCoordinateX($coordinates->x)->whereCoordinateY($coordinates->y)->first();
     }
 }

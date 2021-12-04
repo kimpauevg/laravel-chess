@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace App\Services\ChessPieceMoveCalculators;
 
+use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\Services\ValueObjects\Collections\CoordinateCollection;
 use App\Services\ValueObjects\Coordinates;
 
 class KnightMoveCalculator extends AbstractChessPieceMoveCalculator
 {
-    public function calculateMovesForPiece(ChessGamePiece $piece): CoordinateCollection
+    public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): CoordinateCollection
     {
+        $this->setGamePieces($game);
+
         $x = $piece->coordinate_x;
         $y = $piece->coordinate_y;
 

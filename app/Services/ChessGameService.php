@@ -17,10 +17,7 @@ class ChessGameService
 {
     public function getChessGames(): LengthAwarePaginator
     {
-        /** @var LengthAwarePaginator $paginator */
-        $paginator = $this->getBuilder()->orderBy('created_at')->paginate();
-
-        return $paginator;
+        return $this->getBuilder()->orderBy('created_at')->paginate();
     }
 
     public function getGameById(int $id): ChessGame

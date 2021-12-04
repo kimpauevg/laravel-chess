@@ -31,37 +31,36 @@ class ChessPieceMoveResolver
     {
         $piece = $this->piece;
 
-        $calculator = $this->getCalculatorByName($piece->name);
+        $calculator = $this->getCalculatorByPieceName($piece->name);
 
         if ($calculator === null) {
             return new CoordinateCollection();
         }
 
-        return $calculator->calculateMovesForPiece($piece);
+        return $calculator->calculateMovesForPiece($piece, $this->game);
     }
 
-    private function getCalculatorByName(string $name): ?AbstractChessPieceMoveCalculator
+    private function getCalculatorByPieceName(string $name): ?AbstractChessPieceMoveCalculator
     {
-        switch ($name) {
-            case ChessPieceDictionary::ROOK:
-                return (new RookMoveCalculator($this->game));
+        $class = self::getCalculatorClassByPieceName($name);
 
-            case ChessPieceDictionary::BISHOP:
-                return (new BishopMoveCalculator($this->game));
-
-            case ChessPieceDictionary::QUEEN:
-                return (new QueenMoveCalculator($this->game));
-
-            case ChessPieceDictionary::PAWN:
-                return (new PawnMoveCalculator($this->game));
-
-            case ChessPieceDictionary::KNIGHT:
-                return (new KnightMoveCalculator($this->game));
-
-            case ChessPieceDictionary::KING:
-                return (new KingMoveCalculator($this->game));
+        if ($class === null) {
+            return null;
         }
 
-        return null;
+        return app($class);
+    }
+
+    private function getCalculatorClassByPieceName(string $name): ?string
+    {
+        return match ($name) {
+            ChessPieceDictionary::ROOK   => RookMoveCalculator::class,
+            ChessPieceDictionary::BISHOP => BishopMoveCalculator::class,
+            ChessPieceDictionary::QUEEN  => QueenMoveCalculator::class,
+            ChessPieceDictionary::PAWN   => PawnMoveCalculator::class,
+            ChessPieceDictionary::KNIGHT => KnightMoveCalculator::class,
+            ChessPieceDictionary::KING   => KingMoveCalculator::class,
+            default                      => null,
+        };
     }
 }
