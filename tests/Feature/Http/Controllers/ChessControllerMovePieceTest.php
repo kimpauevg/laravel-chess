@@ -17,10 +17,10 @@ class ChessControllerMovePieceTest extends TestCase
         ChessGameFactory::new(['id' => 1])
             ->hasPieces(
                 ChessGamePieceFactory::new([
-                    'id' => 1,
+                    'id'           => 1,
                     'coordinate_x' => 1,
                     'coordinate_y' => 1,
-                    'name' => ChessPieceDictionary::BISHOP,
+                    'name'         => ChessPieceDictionary::BISHOP,
                 ])
             )
             ->create();
@@ -35,7 +35,7 @@ class ChessControllerMovePieceTest extends TestCase
         $response->assertRedirect()->assertSessionHasNoErrors();
 
         $this->assertDatabaseHas(ChessGamePiece::TABLE, [
-            'id' => 1,
+            'id'           => 1,
             'coordinate_x' => 8,
             'coordinate_y' => 8,
         ]);

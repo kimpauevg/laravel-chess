@@ -6,8 +6,6 @@ namespace Tests\Unit\Services\ChessPieceMoveResolver;
 
 use App\Dictionaries\ChessPieces\ChessPieceDictionary;
 use App\Models\ChessGamePiece;
-use App\Models\Collections\ChessGamePieceCollection;
-use App\Services\ChessPieceMoveResolver;
 
 class KnightResolveTest extends AbstractResolveTest
 {

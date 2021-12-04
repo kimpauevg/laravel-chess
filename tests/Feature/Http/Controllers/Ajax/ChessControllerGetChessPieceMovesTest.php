@@ -16,11 +16,11 @@ class ChessControllerGetChessPieceMovesTest extends TestCase
         ChessGameFactory::new(['id' => 1])
             ->hasPieces(
                 ChessGamePieceFactory::new([
-                    'id' => 1,
+                    'id'           => 1,
                     'coordinate_x' => 1,
                     'coordinate_y' => 2,
-                    'color' => ChessPieceDictionary::COLOR_LIGHT,
-                    'name' => ChessPieceDictionary::PAWN,
+                    'color'        => ChessPieceDictionary::COLOR_LIGHT,
+                    'name'         => ChessPieceDictionary::PAWN,
                 ])
             )
             ->create();
