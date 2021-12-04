@@ -7,16 +7,16 @@ namespace App\Services\ChessPieceMoveCalculators;
 use App\Dictionaries\ChessPieces\ChessPieceDictionary;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
-use App\Services\ValueObjects\Collections\CoordinateCollection;
+use App\Services\ValueObjects\Collections\CoordinatesCollection;
 use App\Services\ValueObjects\Coordinates;
 
 class PawnMoveCalculator extends AbstractChessPieceMoveCalculator
 {
-    public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): CoordinateCollection
+    public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): CoordinatesCollection
     {
         $this->setGamePieces($game);
 
-        $collection = new CoordinateCollection();
+        $collection = new CoordinatesCollection();
 
         if ($piece->color === ChessPieceDictionary::COLOR_LIGHT) {
             $collection->add(new Coordinates($piece->coordinate_x, $piece->coordinate_y + 1));

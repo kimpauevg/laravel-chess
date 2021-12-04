@@ -6,7 +6,7 @@ namespace App\Services\ChessPieceMoveCalculators;
 
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
-use App\Services\ValueObjects\Collections\CoordinateCollection;
+use App\Services\ValueObjects\Collections\CoordinatesCollection;
 
 class QueenMoveCalculator extends AbstractChessPieceMoveCalculator
 {
@@ -16,7 +16,7 @@ class QueenMoveCalculator extends AbstractChessPieceMoveCalculator
     ) {
     }
 
-    public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): CoordinateCollection
+    public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): CoordinatesCollection
     {
         $rook_moves = $this->rook_move_calculator->calculateMovesForPiece($piece, $game);
         $bishop_moves = $this->bishop_move_calculator->calculateMovesForPiece($piece, $game);

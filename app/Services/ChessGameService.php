@@ -8,7 +8,7 @@ use App\Dictionaries\ChessPieces\ChessPieceDictionary;
 use App\Models\Builders\ChessGameBuilder;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
-use App\Services\ValueObjects\Collections\CoordinateCollection;
+use App\Services\ValueObjects\Collections\CoordinatesCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
@@ -38,7 +38,7 @@ class ChessGameService
         return $game;
     }
 
-    public function getPossibleMovesForChessPieceById(int $game_id, int $chess_piece_id): CoordinateCollection
+    public function getPossibleMovesForChessPieceById(int $game_id, int $chess_piece_id): CoordinatesCollection
     {
         $game = $this->getGameById($game_id);
 

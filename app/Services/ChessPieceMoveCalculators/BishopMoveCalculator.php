@@ -4,72 +4,21 @@ declare(strict_types=1);
 
 namespace App\Services\ChessPieceMoveCalculators;
 
-use App\Dictionaries\ChessPieces\ChessPieceDictionary;
-use App\Models\ChessGame;
-use App\Models\ChessGamePiece;
-use App\Services\ValueObjects\Collections\CoordinateCollection;
-use App\Services\ValueObjects\Coordinates;
+use App\Services\ChessPieceMoveCalculators\Traits\MovesInDirectionUntilObstacleTrait;
+use App\Services\ValueObjects\CoordinateModifiers;
+use JetBrains\PhpStorm\Pure;
 
 class BishopMoveCalculator extends AbstractChessPieceMoveCalculator
 {
-    public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): CoordinateCollection
+    use MovesInDirectionUntilObstacleTrait;
+
+    #[Pure] private function getCoordinateModifiers(): array
     {
-        $this->setGamePieces($game);
-
-        $collection = new CoordinateCollection();
-
-        $coordinate_x = $piece->coordinate_x;
-        $coordinate_y = $piece->coordinate_y;
-
-        while (++$coordinate_x <= ChessPieceDictionary::MAX_COORDINATE_X && ++$coordinate_y <= ChessPieceDictionary::MAX_COORDINATE_Y) {
-            $coordinates= new Coordinates($coordinate_x, $coordinate_y);
-
-            if ($this->isGridWithCoordinatesTaken($coordinates)) {
-                break;
-            }
-
-            $collection->add($coordinates);
-        }
-
-        $coordinate_x = $piece->coordinate_x;
-        $coordinate_y = $piece->coordinate_y;
-
-        while (++$coordinate_x <= ChessPieceDictionary::MAX_COORDINATE_X && --$coordinate_y >= ChessPieceDictionary::MIN_COORDINATE_Y) {
-            $coordinates= new Coordinates($coordinate_x, $coordinate_y);
-
-            if ($this->isGridWithCoordinatesTaken($coordinates)) {
-                break;
-            }
-
-            $collection->add($coordinates);
-        }
-
-        $coordinate_x = $piece->coordinate_x;
-        $coordinate_y = $piece->coordinate_y;
-
-        while (--$coordinate_x >= ChessPieceDictionary::MIN_COORDINATE_X && --$coordinate_y >= ChessPieceDictionary::MIN_COORDINATE_Y) {
-            $coordinates= new Coordinates($coordinate_x, $coordinate_y);
-
-            if ($this->isGridWithCoordinatesTaken($coordinates)) {
-                break;
-            }
-
-            $collection->add($coordinates);
-        }
-
-        $coordinate_x = $piece->coordinate_x;
-        $coordinate_y = $piece->coordinate_y;
-
-        while (--$coordinate_x >= ChessPieceDictionary::MIN_COORDINATE_X && ++$coordinate_y <= ChessPieceDictionary::MAX_COORDINATE_Y) {
-            $coordinates = new Coordinates($coordinate_x, $coordinate_y);
-
-            if ($this->isGridWithCoordinatesTaken($coordinates)) {
-                break;
-            }
-
-            $collection->add($coordinates);
-        }
-
-        return $collection;
+        return [
+            new CoordinateModifiers(CoordinateModifiers::MODIFIER_ADD, CoordinateModifiers::MODIFIER_ADD),
+            new CoordinateModifiers(CoordinateModifiers::MODIFIER_ADD, CoordinateModifiers::MODIFIER_SUBTRACT),
+            new CoordinateModifiers(CoordinateModifiers::MODIFIER_SUBTRACT, CoordinateModifiers::MODIFIER_ADD),
+            new CoordinateModifiers(CoordinateModifiers::MODIFIER_SUBTRACT, CoordinateModifiers::MODIFIER_SUBTRACT),
+        ];
     }
 }

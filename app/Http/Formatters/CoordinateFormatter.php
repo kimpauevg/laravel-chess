@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Formatters;
 
-use App\Services\ValueObjects\Collections\CoordinateCollection;
+use App\Services\ValueObjects\Collections\CoordinatesCollection;
 
 class CoordinateFormatter
 {
-    public function formatCollection(CoordinateCollection $collection): array
+    public function formatCollection(CoordinatesCollection $collection): array
     {
         $result = [];
 

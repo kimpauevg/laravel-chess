@@ -8,7 +8,7 @@ use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\Models\Collections\ChessGamePieceCollection;
 use App\Services\ChessPieceMoveResolver;
-use App\Services\ValueObjects\Collections\CoordinateCollection;
+use App\Services\ValueObjects\Collections\CoordinatesCollection;
 use App\Services\ValueObjects\Coordinates;
 use Database\Factories\ChessGamePieceFactory;
 use Illuminate\Support\Arr;
@@ -18,7 +18,7 @@ abstract class AbstractResolveTest extends TestCase
 {
     protected function assertCoordinatesCollectionEquals(
         array                $expected_coordinates_array,
-        CoordinateCollection $actual_coordinates
+        CoordinatesCollection $actual_coordinates
     ): void {
         $expected_coordinates_collection = $this->coordinateArrayToCollection($expected_coordinates_array);
 
@@ -39,20 +39,20 @@ abstract class AbstractResolveTest extends TestCase
         );
     }
 
-    public function mapCoordinateCollectionToArray(CoordinateCollection $collection): array
+    public function mapCoordinateCollectionToArray(CoordinatesCollection $collection): array
     {
         return $collection->map(function (Coordinates $coordinates) {
             return "$coordinates->x, $coordinates->y";
         })->all();
     }
 
-    public function coordinateArrayToCollection(array $coordinates): CoordinateCollection
+    public function coordinateArrayToCollection(array $coordinates): CoordinatesCollection
     {
         $coordinates_collection = collect($coordinates)->map(function (array $one) {
             return new Coordinates(Arr::get($one, 0), Arr::get($one, 1));
         });
 
-        return new CoordinateCollection($coordinates_collection->all());
+        return new CoordinatesCollection($coordinates_collection->all());
     }
 
     protected function makePieceWithCoordinates(string $name, string $color, int $x, int $y): ChessGamePiece

@@ -10,9 +10,9 @@ use Illuminate\Support\Collection;
 /**
  * @method Coordinates[] all()
  */
-class CoordinateCollection extends Collection
+class CoordinatesCollection extends Collection
 {
-    public function subtractCollection(CoordinateCollection $collection): self
+    public function subtractCollection(CoordinatesCollection $collection): self
     {
         return $this->filter(function (Coordinates $coordinates) use ($collection) {
             return $collection->whereX($coordinates->x)->whereY($coordinates->y)->count() === 0;
