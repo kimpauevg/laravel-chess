@@ -7,6 +7,7 @@ namespace App\Services\ChessPieceMoveCalculators;
 use App\Dictionaries\ChessPieces\ChessPieceDictionary;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
+use App\Services\ValueObjects\ChessPieceMoves;
 use App\Services\ValueObjects\Collections\CoordinatesCollection;
 use App\Services\ValueObjects\CoordinateModifiers;
 use App\Services\ValueObjects\Coordinates;
@@ -16,7 +17,7 @@ class PawnMoveCalculator extends AbstractChessPieceMoveCalculator
     public const LIGHT_PAWN_STARTING_Y_COORDINATE = 2;
     public const DARK_PAWN_STARTING_Y_COORDINATE = 7;
 
-    public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): CoordinatesCollection
+    public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): ChessPieceMoves
     {
         $this->setGamePieces($game);
 
@@ -27,7 +28,10 @@ class PawnMoveCalculator extends AbstractChessPieceMoveCalculator
             $modifier = CoordinateModifiers::MODIFIER_SUBTRACT;
         }
 
-        return $this->getPawnMovementsUsingModifier($piece, $modifier);
+        $moves = new ChessPieceMoves();
+        $moves->movement_coordinates_collection = $this->getPawnMovementsUsingModifier($piece, $modifier);
+
+        return $moves;
     }
 
     private function getPawnMovementsUsingModifier(

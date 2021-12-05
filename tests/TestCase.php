@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Services\ValueObjects\ChessPieceMoves;
 use App\Services\ValueObjects\Collections\CoordinatesCollection;
 use App\Services\ValueObjects\Coordinates;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -11,10 +12,11 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    protected function assertCoordinatesCollectionEquals(
+    protected function assertMovesMovementCollectionEquals(
         array                $expected_coordinates_array,
-        CoordinatesCollection $actual_coordinates
+        ChessPieceMoves      $moves
     ): void {
+        $actual_coordinates = $moves->movement_coordinates_collection;
         $expected_coordinates_collection = $this->coordinateArrayToCollection($expected_coordinates_array);
 
         $unexpected_coordinates = $actual_coordinates->subtractCollection($expected_coordinates_collection);

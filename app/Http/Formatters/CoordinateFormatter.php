@@ -4,11 +4,19 @@ declare(strict_types=1);
 
 namespace App\Http\Formatters;
 
+use App\Services\ValueObjects\ChessPieceMoves;
 use App\Services\ValueObjects\Collections\CoordinatesCollection;
 
 class CoordinateFormatter
 {
-    public function formatCollection(CoordinatesCollection $collection): array
+    public function formatMoves(ChessPieceMoves $moves): array
+    {
+        return [
+            'movements' => $this->coordinateCollectionToArray($moves->movement_coordinates_collection),
+        ];
+    }
+
+    private function coordinateCollectionToArray(CoordinatesCollection $collection): array
     {
         $result = [];
 

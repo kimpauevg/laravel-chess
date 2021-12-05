@@ -15,7 +15,7 @@ class PawnResolveTest extends AbstractResolveTest
 
         $resolver = $this->makeResolverForEmptyTable($piece);
 
-        $collection = $resolver->getPossibleMovesCoordinates();
+        $collection = $resolver->getPossibleMoves();
 
         /**
          *  h | . . . . . . . . |
@@ -33,7 +33,7 @@ class PawnResolveTest extends AbstractResolveTest
             [4, 4],
         ];
 
-        $this->assertCoordinatesCollectionEquals($expected_coordinates, $collection);
+        $this->assertMovesMovementCollectionEquals($expected_coordinates, $collection);
     }
 
     public function testLightMoveFromNonStartingPosition(): void
@@ -42,7 +42,7 @@ class PawnResolveTest extends AbstractResolveTest
 
         $resolver = $this->makeResolverForEmptyTable($piece);
 
-        $collection = $resolver->getPossibleMovesCoordinates();
+        $collection = $resolver->getPossibleMoves();
 
         /**
          *  h | . . . . . . . . |
@@ -59,7 +59,7 @@ class PawnResolveTest extends AbstractResolveTest
             [4, 4],
         ];
 
-        $this->assertCoordinatesCollectionEquals($expected_coordinates, $collection);
+        $this->assertMovesMovementCollectionEquals($expected_coordinates, $collection);
     }
 
     public function testDarkMoveFromStartingPosition(): void
@@ -68,7 +68,7 @@ class PawnResolveTest extends AbstractResolveTest
 
         $resolver = $this->makeResolverForEmptyTable($piece);
 
-        $collection = $resolver->getPossibleMovesCoordinates();
+        $collection = $resolver->getPossibleMoves();
 
         /**
          *  h | . . . . . . . . |
@@ -86,7 +86,7 @@ class PawnResolveTest extends AbstractResolveTest
             [4, 5],
         ];
 
-        $this->assertCoordinatesCollectionEquals($expected_coordinates, $collection);
+        $this->assertMovesMovementCollectionEquals($expected_coordinates, $collection);
     }
 
     public function testDarkMoveFromNonStartingPosition(): void
@@ -95,7 +95,7 @@ class PawnResolveTest extends AbstractResolveTest
 
         $resolver = $this->makeResolverForEmptyTable($piece);
 
-        $collection = $resolver->getPossibleMovesCoordinates();
+        $collection = $resolver->getPossibleMoves();
 
         /**
          *  h | . . . . . . . . |
@@ -112,7 +112,7 @@ class PawnResolveTest extends AbstractResolveTest
             [4, 5],
         ];
 
-        $this->assertCoordinatesCollectionEquals($expected_coordinates, $collection);
+        $this->assertMovesMovementCollectionEquals($expected_coordinates, $collection);
     }
 
     private function makeDarkPawnWithCoordinates(int $x, int $y): ChessGamePiece

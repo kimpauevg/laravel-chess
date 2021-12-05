@@ -15,7 +15,7 @@ class KingResolveTest extends AbstractResolveTest
 
         $resolver = $this->makeResolverForEmptyTable($piece);
 
-        $collection = $resolver->getPossibleMovesCoordinates();
+        $moves = $resolver->getPossibleMoves();
 
         /**
          *  h | . . . . . . . . |
@@ -39,7 +39,7 @@ class KingResolveTest extends AbstractResolveTest
             [3, 3],
         ];
 
-        $this->assertCoordinatesCollectionEquals($expected_coordinates, $collection);
+        $this->assertMovesMovementCollectionEquals($expected_coordinates, $moves);
     }
 
     public function testMovesFromCorner(): void
@@ -51,7 +51,7 @@ class KingResolveTest extends AbstractResolveTest
 
         $resolver = $this->makeResolverForEmptyTable($piece);
 
-        $collection = $resolver->getPossibleMovesCoordinates();
+        $collection = $resolver->getPossibleMoves();
 
         /**
          *  h | . . . . . . . . |
@@ -71,7 +71,7 @@ class KingResolveTest extends AbstractResolveTest
             [2, 1],
         ];
 
-        $this->assertCoordinatesCollectionEquals($expected_coordinates, $collection);
+        $this->assertMovesMovementCollectionEquals($expected_coordinates, $collection);
     }
 
     private function makeLightKingWithCoordinates(int $x, int $y): ChessGamePiece

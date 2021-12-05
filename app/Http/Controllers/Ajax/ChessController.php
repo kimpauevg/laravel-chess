@@ -20,7 +20,7 @@ class ChessController extends Controller
         $collection = $service->getPossibleMovesForChessPieceById($id, $chess_piece_id);
 
         return response()->json(
-            $formatter->formatCollection($collection),
+            $formatter->formatMoves($collection),
         );
     }
 }

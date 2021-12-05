@@ -6,20 +6,21 @@ namespace App\Services\ChessPieceMoveCalculators\Traits;
 
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
+use App\Services\ValueObjects\ChessPieceMoves;
 use App\Services\ValueObjects\Collections\CoordinatesCollection;
 
 trait MovesOnCoordinatesTrait
 {
     use ChecksCoordinatesTrait;
 
-    public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): CoordinatesCollection
+    public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): ChessPieceMoves
     {
         $this->setGamePieces($game);
 
-        return $this->filterProposedCoordinates($this->getCoordinatesForPiece($piece));
+        return $this->getMovesFromCoordinates($this->getCoordinatesForPiece($piece));
     }
 
-    protected function filterProposedCoordinates(array $possible_coordinates): CoordinatesCollection
+    protected function getMovesFromCoordinates(array $possible_coordinates): ChessPieceMoves
     {
         $valid_coordinates = [];
 
@@ -31,17 +32,20 @@ trait MovesOnCoordinatesTrait
             $valid_coordinates[] = $coordinates;
         }
 
-        $collection = new CoordinatesCollection();
+        $movements_collection = new CoordinatesCollection();
 
         foreach ($valid_coordinates as $coordinates) {
             if ($this->isGridWithCoordinatesTaken($coordinates)) {
                 continue;
             }
 
-            $collection->add($coordinates);
+            $movements_collection->add($coordinates);
         }
 
-        return $collection;
+        $moves = new ChessPieceMoves();
+        $moves->movement_coordinates_collection = $movements_collection;
+
+        return $moves;
     }
 
     abstract protected function getCoordinatesForPiece(ChessGamePiece $piece): array;

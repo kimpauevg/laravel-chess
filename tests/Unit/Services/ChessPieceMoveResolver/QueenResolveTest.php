@@ -15,7 +15,7 @@ class QueenResolveTest extends AbstractResolveTest
 
         $game = $this->makeResolverForEmptyTable($piece);
 
-        $collection = $game->getPossibleMovesCoordinates();
+        $collection = $game->getPossibleMoves();
 
         /**
          *  h | . . . + . . . + |
@@ -43,7 +43,7 @@ class QueenResolveTest extends AbstractResolveTest
             [5, 3], [6, 2], [7, 1],
         ];
 
-        $this->assertCoordinatesCollectionEquals($expected_coordinates, $collection);
+        $this->assertMovesMovementCollectionEquals($expected_coordinates, $collection);
     }
 
     private function makeLightQueenWithCoordinates(int $x, int $y): ChessGamePiece

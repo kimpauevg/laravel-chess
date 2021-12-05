@@ -40,7 +40,7 @@ class PawnMoveCalculatorTest extends AbstractChessPieceMoveTest
 
         $expected_coordinates = [];
 
-        $this->assertCoordinatesCollectionEquals($expected_coordinates, $move_collection);
+        $this->assertMovesMovementCollectionEquals($expected_coordinates, $move_collection);
     }
 
     public function testTwoSquareMoveBlockedByAnotherFigure(): void
@@ -76,7 +76,7 @@ class PawnMoveCalculatorTest extends AbstractChessPieceMoveTest
             [4, 3],
         ];
 
-        $this->assertCoordinatesCollectionEquals($expected_coordinates, $move_collection);
+        $this->assertMovesMovementCollectionEquals($expected_coordinates, $move_collection);
     }
 
     private function getCalculator(): PawnMoveCalculator

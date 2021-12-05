@@ -6,6 +6,7 @@ namespace App\Services\ChessPieceMoveCalculators\Traits;
 
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
+use App\Services\ValueObjects\ChessPieceMoves;
 use App\Services\ValueObjects\Collections\CoordinatesCollection;
 use App\Services\ValueObjects\CoordinateModifiers;
 use App\Services\ValueObjects\Coordinates;
@@ -14,25 +15,25 @@ trait MovesInDirectionUntilObstacleTrait
 {
     use ChecksCoordinatesTrait;
 
-    public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): CoordinatesCollection
+    public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): ChessPieceMoves
     {
         $this->setGamePieces($game);
 
-        $movements_collection = new CoordinatesCollection();
+        $moves = new ChessPieceMoves();
 
         /** @var CoordinateModifiers $coordinate_modifiers */
         foreach ($this->getCoordinateModifiers() as $coordinate_modifiers) {
-            $new_movements = $this->findPieceMovesInDirectionUsingModifiers($piece, $coordinate_modifiers);
-            $movements_collection = $movements_collection->merge($new_movements);
+            $new_moves = $this->findPieceMovesInDirectionUsingModifiers($piece, $coordinate_modifiers);
+            $moves->merge($new_moves);
         }
 
-        return $movements_collection;
+        return $moves;
     }
 
     private function findPieceMovesInDirectionUsingModifiers(
         ChessGamePiece $piece,
         CoordinateModifiers $modifiers,
-    ): CoordinatesCollection {
+    ): ChessPieceMoves {
         $coordinate_x = $piece->coordinate_x;
         $coordinate_y = $piece->coordinate_y;
 
@@ -55,6 +56,9 @@ trait MovesInDirectionUntilObstacleTrait
             $movements_collection->add($coordinates);
         } while (true);
 
-        return $movements_collection;
+        $moves = new ChessPieceMoves();
+        $moves->movement_coordinates_collection = $movements_collection;
+
+        return $moves;
     }
 }

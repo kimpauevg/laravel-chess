@@ -14,6 +14,7 @@ use App\Services\ChessPieceMoveCalculators\KnightMoveCalculator;
 use App\Services\ChessPieceMoveCalculators\PawnMoveCalculator;
 use App\Services\ChessPieceMoveCalculators\QueenMoveCalculator;
 use App\Services\ChessPieceMoveCalculators\RookMoveCalculator;
+use App\Services\ValueObjects\ChessPieceMoves;
 use App\Services\ValueObjects\Collections\CoordinatesCollection;
 
 class ChessPieceMoveResolver
@@ -27,14 +28,14 @@ class ChessPieceMoveResolver
         $this->game = $game;
     }
 
-    public function getPossibleMovesCoordinates(): CoordinatesCollection
+    public function getPossibleMoves(): ChessPieceMoves
     {
         $piece = $this->piece;
 
         $calculator = $this->getCalculatorByPieceName($piece->name);
 
         if ($calculator === null) {
-            return new CoordinatesCollection();
+            return new ChessPieceMoves();
         }
 
         return $calculator->calculateMovesForPiece($piece, $this->game);
