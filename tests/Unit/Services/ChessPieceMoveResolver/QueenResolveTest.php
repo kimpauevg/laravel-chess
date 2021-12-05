@@ -48,7 +48,7 @@ class QueenResolveTest extends AbstractResolveTest
 
     private function makeLightQueenWithCoordinates(int $x, int $y): ChessGamePiece
     {
-        return $this->makePieceWithCoordinates(
+        return $this->makeGamePieceWithCoordinates(
             ChessPieceDictionary::QUEEN,
             ChessPieceDictionary::COLOR_LIGHT,
             $x,

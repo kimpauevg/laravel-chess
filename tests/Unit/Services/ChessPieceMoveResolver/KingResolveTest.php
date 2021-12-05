@@ -76,7 +76,7 @@ class KingResolveTest extends AbstractResolveTest
 
     private function makeLightKingWithCoordinates(int $x, int $y): ChessGamePiece
     {
-        return $this->makePieceWithCoordinates(
+        return $this->makeGamePieceWithCoordinates(
             ChessPieceDictionary::KING,
             ChessPieceDictionary::COLOR_LIGHT,
             $x,

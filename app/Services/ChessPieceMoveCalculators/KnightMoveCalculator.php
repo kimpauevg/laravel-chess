@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services\ChessPieceMoveCalculators;
 
-use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\Services\ChessPieceMoveCalculators\Traits\MovesOnCoordinatesTrait;
-use App\Services\ValueObjects\Collections\CoordinatesCollection;
 use App\Services\ValueObjects\Coordinates;
 use JetBrains\PhpStorm\Pure;
 

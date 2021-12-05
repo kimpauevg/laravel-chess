@@ -70,7 +70,7 @@ class KnightResolveTest extends AbstractResolveTest
 
     private function makeLightKnightWithCoordinates(int $x, int $y): ChessGamePiece
     {
-        return $this->makePieceWithCoordinates(
+        return $this->makeGamePieceWithCoordinates(
             ChessPieceDictionary::KNIGHT,
             ChessPieceDictionary::COLOR_LIGHT,
             $x,

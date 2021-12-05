@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\ChessGame;
+use App\Models\Collections\ChessGameCollection;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method ChessGame|ChessGameCollection make($attributes = [], ?Model $parent = null)
+ */
 class ChessGameFactory extends Factory
 {
     protected string $model = ChessGame::class;

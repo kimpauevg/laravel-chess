@@ -117,7 +117,7 @@ class PawnResolveTest extends AbstractResolveTest
 
     private function makeDarkPawnWithCoordinates(int $x, int $y): ChessGamePiece
     {
-        return $this->makePieceWithCoordinates(
+        return $this->makeGamePieceWithCoordinates(
             ChessPieceDictionary::PAWN,
             ChessPieceDictionary::COLOR_DARK,
             $x,
@@ -127,7 +127,7 @@ class PawnResolveTest extends AbstractResolveTest
 
     private function makeLightPawnWithCoordinates(int $x, int $y): ChessGamePiece
     {
-        return $this->makePieceWithCoordinates(
+        return $this->makeGamePieceWithCoordinates(
             ChessPieceDictionary::PAWN,
             ChessPieceDictionary::COLOR_LIGHT,
             $x,
