@@ -7,6 +7,7 @@ namespace App\Services\ChessPieceMoveCalculators;
 use App\Dictionaries\ChessPieces\ChessPieceDictionary;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
+use App\Services\ChessPieceMoveCalculators\Traits\MovesOnCoordinatesTrait;
 use App\Services\ValueObjects\ChessPieceMoves;
 use App\Services\ValueObjects\Collections\CoordinatesCollection;
 use App\Services\ValueObjects\CoordinateModifiers;
@@ -14,6 +15,8 @@ use App\Services\ValueObjects\Coordinates;
 
 class PawnMoveCalculator extends AbstractChessPieceMoveCalculator
 {
+    use MovesOnCoordinatesTrait;
+
     public const LIGHT_PAWN_STARTING_Y_COORDINATE = 2;
     public const DARK_PAWN_STARTING_Y_COORDINATE = 7;
 
@@ -22,16 +25,33 @@ class PawnMoveCalculator extends AbstractChessPieceMoveCalculator
         $this->setGamePieces($game);
 
         // Light pieces move upward
-        $modifier = CoordinateModifiers::MODIFIER_ADD;
+        $y_coordinate_modifier = CoordinateModifiers::MODIFIER_ADD;
 
         if ($piece->color === ChessPieceDictionary::COLOR_DARK) {
-            $modifier = CoordinateModifiers::MODIFIER_SUBTRACT;
+            $y_coordinate_modifier = CoordinateModifiers::MODIFIER_SUBTRACT;
         }
 
         $moves = new ChessPieceMoves();
-        $moves->movement_coordinates_collection = $this->getPawnMovementsUsingModifier($piece, $modifier);
+        $moves->movement_coordinates_collection = $this->getPawnMovementsUsingModifier($piece, $y_coordinate_modifier);
+        $moves->capture_coordinates_collection = $this->getPawnCapturesUsingModifier($piece, $y_coordinate_modifier);
 
         return $moves;
+    }
+
+    private function getPawnCapturesUsingModifier(
+        ChessGamePiece $piece,
+        int $y_coordinate_modifier
+    ): CoordinatesCollection {
+        $new_y_coordinate = $piece->coordinate_y + $y_coordinate_modifier;
+
+        $coordinates = [
+            new Coordinates($piece->coordinate_x + 1, $new_y_coordinate),
+            new Coordinates($piece->coordinate_x - 1, $new_y_coordinate),
+        ];
+
+        $moves_on_coordinates = $this->getMovesFromCoordinates($coordinates, $piece);
+
+        return $moves_on_coordinates->capture_coordinates_collection;
     }
 
     private function getPawnMovementsUsingModifier(

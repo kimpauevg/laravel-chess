@@ -17,22 +17,29 @@ $pieces = collect(Arr::get($chess_game, 'pieces', []));
         .background-dark {
             background: #6E6E6E;
         }
-        .background-white {
+        .background-light {
             background: #bee5eb;
         }
 
         .board-square-selected.background-dark {
             background: #c69500;
         }
-        .board-square-selected.background-white {
+        .board-square-selected.background-light {
             background: #d6a510;
         }
 
         .board-square-move.background-dark {
             background: #1e7e34;
         }
-        .board-square-move.background-white {
+        .board-square-move.background-light {
             background: #2e8e44;
+        }
+
+        .board-square-capture.background-dark {
+            background: #990000;
+        }
+        .board-square-capture.background-light {
+            background: #ce2029;
         }
     </style>
     <div class="col-lg-8 mx-auto mt-2">
@@ -41,7 +48,7 @@ $pieces = collect(Arr::get($chess_game, 'pieces', []));
                 @for($vertical_coordinate = 8; $vertical_coordinate > 0; $vertical_coordinate--)
                     @for($horizontal_coordinate = 1; $horizontal_coordinate <= 8; $horizontal_coordinate++)
                         @php
-                        $background = ($vertical_coordinate + $horizontal_coordinate) % 2 === 0 ? 'background-dark' : 'background-white';
+                        $background = ($vertical_coordinate + $horizontal_coordinate) % 2 === 0 ? 'background-dark' : 'background-light';
                         $chess_piece = $pieces->where('coordinates.x', $horizontal_coordinate)->where('coordinates.y', $vertical_coordinate)->first();
                         @endphp
                         <div class="board-square {{ $background }}"
@@ -73,12 +80,14 @@ $pieces = collect(Arr::get($chess_game, 'pieces', []));
                 $('.chess-board .board-square')
                     .removeClass('board-square-selected')
                     .removeClass('board-square-move')
+                    .removeClass('board-square-capture')
+
 
                 selected_piece_id = null;
                 return;
             }
 
-            if (square.hasClass('board-square-move')) {
+            if (square.hasClass('board-square-move') || square.hasClass('board-square-capture')) {
                 let url = '{{ route('chess-games.move-chess-piece', ['id' => Arr::get($chess_game, 'id'), 'chess_piece_id' => '%piece_id%']) }}'
                     .replace('%piece_id%', selected_piece_id);
 
@@ -118,14 +127,21 @@ $pieces = collect(Arr::get($chess_game, 'pieces', []));
             $.ajax({
                 url: url,
                 success: function (data) {
+                    console.log(data);
                     square.addClass('board-square-selected');
 
-                    for (let coordinates of data) {
-                        let coordinate_selector = '[data-coordinate-x=' + coordinates.x + '][data-coordinate-y=' + coordinates.y + ']';
-                        $('.board-square' + coordinate_selector).addClass('board-square-move');
+                    for (let coordinates of data.movements) {
+                        getSelectorForCoordinates(coordinates).addClass('board-square-move');
+                    }
+                    for (let coordinates of data.captures) {
+                        getSelectorForCoordinates(coordinates).addClass('board-square-capture')
                     }
                 }
             });
+        }
+
+        function getSelectorForCoordinates(coordinates) {
+            return $('.board-square[data-coordinate-x=' + coordinates.x + '][data-coordinate-y=' + coordinates.y + ']');
         }
     </script>
 @endsection

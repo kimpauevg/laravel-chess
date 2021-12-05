@@ -37,7 +37,7 @@ trait MovesInDirectionUntilObstacleTrait
         $coordinate_x = $piece->coordinate_x;
         $coordinate_y = $piece->coordinate_y;
 
-        $movements_collection = new CoordinatesCollection();
+        $moves = new ChessPieceMoves();
 
         do {
             $coordinate_x += $modifiers->x_modifier;
@@ -49,15 +49,20 @@ trait MovesInDirectionUntilObstacleTrait
                 break;
             }
 
-            if ($this->isGridWithCoordinatesTaken($coordinates)) {
+            $piece_on_coordinates = $this->getChessPieceWithCoordinates($coordinates);
+
+            $piece_on_coordinates_exists = !is_null($piece_on_coordinates);
+
+            if ($piece_on_coordinates_exists && $piece_on_coordinates->color != $piece->color) {
+                $moves->capture_coordinates_collection->add($coordinates);
+            }
+
+            if ($piece_on_coordinates_exists) {
                 break;
             }
 
-            $movements_collection->add($coordinates);
+            $moves->movement_coordinates_collection->add($coordinates);
         } while (true);
-
-        $moves = new ChessPieceMoves();
-        $moves->movement_coordinates_collection = $movements_collection;
 
         return $moves;
     }

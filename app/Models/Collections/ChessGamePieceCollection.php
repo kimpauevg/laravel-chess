@@ -9,12 +9,18 @@ use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @method ChessGamePiece|null first(callable $callback = null, $default = null)
+ * @method ChessGamePiece firstOrFail($key = null, $operator = null, $value = null)
  */
 class ChessGamePieceCollection extends Collection
 {
     public function findOrFail(int $id): ChessGamePiece
     {
         return $this->firstOrFail('id', $id);
+    }
+
+    public function whereCoordinates(int $x, int $y): self
+    {
+        return $this->whereCoordinateX($x)->whereCoordinateY($y);
     }
 
     public function whereCoordinateX(int $coordinate): self

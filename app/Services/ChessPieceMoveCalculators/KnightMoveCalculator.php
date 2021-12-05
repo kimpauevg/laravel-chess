@@ -4,14 +4,24 @@ declare(strict_types=1);
 
 namespace App\Services\ChessPieceMoveCalculators;
 
+use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\Services\ChessPieceMoveCalculators\Traits\MovesOnCoordinatesTrait;
+use App\Services\ValueObjects\ChessPieceMoves;
 use App\Services\ValueObjects\Coordinates;
 use JetBrains\PhpStorm\Pure;
 
 class KnightMoveCalculator extends AbstractChessPieceMoveCalculator
 {
     use MovesOnCoordinatesTrait;
+
+    public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): ChessPieceMoves
+    {
+        $this->setGamePieces($game);
+
+        return $this->getMovesFromCoordinates($this->getCoordinatesForPiece($piece), $piece);
+    }
+
 
     #[Pure] protected function getCoordinatesForPiece(ChessGamePiece $piece): array
     {

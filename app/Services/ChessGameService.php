@@ -9,7 +9,6 @@ use App\Models\Builders\ChessGameBuilder;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\Services\ValueObjects\ChessPieceMoves;
-use App\Services\ValueObjects\Collections\CoordinatesCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
@@ -63,24 +62,42 @@ class ChessGameService
 
         $moves = $resolver->getPossibleMoves();
 
-        $coordinate_x = Arr::get($coordinates, 'x');
-        $coordinate_y = Arr::get($coordinates, 'y');
+        $coordinate_x = (int) Arr::get($coordinates, 'x');
+        $coordinate_y = (int) Arr::get($coordinates, 'y');
 
-        $movement_is_impossible = $moves->movement_coordinates_collection
-            ->where('x', $coordinate_x)
-            ->where('y', $coordinate_y)
-            ->count() === 0;
+        $move_is_movement = $moves->movement_coordinates_collection
+            ->whereCoordinates($coordinate_x, $coordinate_y)
+            ->exists();
 
-        if ($movement_is_impossible) {
-            throw ValidationException::withMessages([
-                'coordinates' => 'Move is not allowed',
-            ]);
+        $move_is_capture = $moves->capture_coordinates_collection
+            ->whereCoordinates($coordinate_x, $coordinate_y)
+            ->exists();
+
+        if ($move_is_movement) {
+            $chess_piece->coordinate_x = $coordinate_x;
+            $chess_piece->coordinate_y = $coordinate_y;
+
+            $chess_piece->save();
+
+            return;
         }
 
-        $chess_piece->coordinate_x = $coordinate_x;
-        $chess_piece->coordinate_y = $coordinate_y;
+        if ($move_is_capture) {
+            $captured_piece = $game->pieces->whereCoordinates($coordinate_x, $coordinate_y)->firstOrFail();
 
-        $chess_piece->save();
+            $captured_piece->is_captured = true;
+            $captured_piece->save();
+
+            $chess_piece->coordinate_x = $coordinate_x;
+            $chess_piece->coordinate_y = $coordinate_y;
+
+            $chess_piece->save();
+            return;
+        }
+
+        throw ValidationException::withMessages([
+            'coordinates' => 'Move is not allowed',
+        ]);
     }
 
     private function storeDefaultPiecesForGame(ChessGame $game): void

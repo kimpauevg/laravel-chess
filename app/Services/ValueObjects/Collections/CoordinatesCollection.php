@@ -6,6 +6,7 @@ namespace App\Services\ValueObjects\Collections;
 
 use App\Services\ValueObjects\Coordinates;
 use Illuminate\Support\Collection;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * @method Coordinates[] all()
@@ -27,5 +28,15 @@ class CoordinatesCollection extends Collection
     public function whereY(int $coordinate): self
     {
         return $this->where('y', $coordinate);
+    }
+
+    public function whereCoordinates(int $x, int $y): self
+    {
+        return $this->whereX($x)->whereY($y);
+    }
+
+    #[Pure] public function exists(): bool
+    {
+        return $this->count() > 0;
     }
 }

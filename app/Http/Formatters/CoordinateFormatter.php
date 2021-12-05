@@ -13,6 +13,7 @@ class CoordinateFormatter
     {
         return [
             'movements' => $this->coordinateCollectionToArray($moves->movement_coordinates_collection),
+            'captures'  => $this->coordinateCollectionToArray($moves->capture_coordinates_collection),
         ];
     }
 

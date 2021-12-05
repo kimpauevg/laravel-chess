@@ -13,14 +13,7 @@ trait MovesOnCoordinatesTrait
 {
     use ChecksCoordinatesTrait;
 
-    public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): ChessPieceMoves
-    {
-        $this->setGamePieces($game);
-
-        return $this->getMovesFromCoordinates($this->getCoordinatesForPiece($piece));
-    }
-
-    protected function getMovesFromCoordinates(array $possible_coordinates): ChessPieceMoves
+    protected function getMovesFromCoordinates(array $possible_coordinates, ChessGamePiece $piece): ChessPieceMoves
     {
         $valid_coordinates = [];
 
@@ -32,21 +25,23 @@ trait MovesOnCoordinatesTrait
             $valid_coordinates[] = $coordinates;
         }
 
-        $movements_collection = new CoordinatesCollection();
+        $moves = new ChessPieceMoves();
 
         foreach ($valid_coordinates as $coordinates) {
-            if ($this->isGridWithCoordinatesTaken($coordinates)) {
+            $piece_on_coordinates = $this->getChessPieceWithCoordinates($coordinates);
+            $piece_on_coordinates_exists = !is_null($piece_on_coordinates);
+
+            if ($piece_on_coordinates_exists && $piece_on_coordinates->color != $piece->color) {
+                $moves->capture_coordinates_collection->add($coordinates);
+            }
+
+            if ($piece_on_coordinates_exists) {
                 continue;
             }
 
-            $movements_collection->add($coordinates);
+            $moves->movement_coordinates_collection->add($coordinates);
         }
-
-        $moves = new ChessPieceMoves();
-        $moves->movement_coordinates_collection = $movements_collection;
 
         return $moves;
     }
-
-    abstract protected function getCoordinatesForPiece(ChessGamePiece $piece): array;
 }
