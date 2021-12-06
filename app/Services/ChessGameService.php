@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Dictionaries\ChessPieceMoveTypes\ChessPieceMoveTypeDictionary;
 use App\Dictionaries\ChessPieces\ChessPieceDictionary;
 use App\Models\Builders\ChessGameBuilder;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
+use App\Models\ChessGamePieceMove;
 use App\Services\ValueObjects\ChessPieceMoves;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
@@ -60,16 +62,26 @@ class ChessGameService
 
         $resolver = new ChessPieceMoveResolver($chess_piece, $game);
 
-        $moves = $resolver->getPossibleMoves();
+        $possible_moves = $resolver->getPossibleMoves();
 
         $coordinate_x = (int) Arr::get($coordinates, 'x');
         $coordinate_y = (int) Arr::get($coordinates, 'y');
 
-        $move_is_movement = $moves->movement_coordinates_collection
+        $move = new ChessGamePieceMove();
+
+        $move->chess_game_id = $game->id;
+        $move->move_index = $game->moves->getLastMoveIndex() + 1;
+        $move->chess_piece_name = $chess_piece->name;
+        $move->previous_coordinate_x = $chess_piece->coordinate_x;
+        $move->previous_coordinate_y = $chess_piece->coordinate_y;
+        $move->coordinate_x = $coordinate_x;
+        $move->coordinate_y = $coordinate_y;
+
+        $move_is_movement = $possible_moves->movement_coordinates_collection
             ->whereCoordinates($coordinate_x, $coordinate_y)
             ->exists();
 
-        $move_is_capture = $moves->capture_coordinates_collection
+        $move_is_capture = $possible_moves->capture_coordinates_collection
             ->whereCoordinates($coordinate_x, $coordinate_y)
             ->exists();
 
@@ -78,6 +90,9 @@ class ChessGameService
             $chess_piece->coordinate_y = $coordinate_y;
 
             $chess_piece->save();
+
+            $move->type = ChessPieceMoveTypeDictionary::MOVEMENT;
+            $move->save();
 
             return;
         }
@@ -92,6 +107,9 @@ class ChessGameService
             $chess_piece->coordinate_y = $coordinate_y;
 
             $chess_piece->save();
+
+            $move->type = ChessPieceMoveTypeDictionary::CAPTURE;
+            $move->save();
             return;
         }
 
