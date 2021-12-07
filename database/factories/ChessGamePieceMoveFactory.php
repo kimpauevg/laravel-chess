@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Dictionaries\ChessPieceMoveTypes\ChessPieceMoveTypeDictionary;
 use App\Dictionaries\ChessPieces\ChessPieceDictionary;
 use App\Models\ChessGamePieceMove;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -24,7 +23,6 @@ class ChessGamePieceMoveFactory extends Factory
             'coordinate_x' => $this->faker->numberBetween(...$x_coordinates_between),
             'coordinate_y' => $this->faker->numberBetween(...$y_coordinates_between),
             'chess_piece_name' => ChessPieceDictionary::QUEEN,
-            'type' => ChessPieceMoveTypeDictionary::MOVEMENT,
             'move_index' => 1
         ];
     }

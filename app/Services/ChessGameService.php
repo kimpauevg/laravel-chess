@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Dictionaries\ChessPieceMoveTypes\ChessPieceMoveTypeDictionary;
 use App\Dictionaries\ChessPieces\ChessPieceDictionary;
 use App\Models\Builders\ChessGameBuilder;
 use App\Models\ChessGame;
@@ -96,7 +95,6 @@ class ChessGameService
 
             $chess_piece->save();
 
-            $move->type = ChessPieceMoveTypeDictionary::MOVEMENT;
             $move->save();
 
             return;
@@ -113,7 +111,7 @@ class ChessGameService
 
             $chess_piece->save();
 
-            $move->type = ChessPieceMoveTypeDictionary::CAPTURE;
+            $move->is_capture = true;
             $move->save();
             return;
         }

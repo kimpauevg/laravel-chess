@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $previous_coordinate_y
  * @property int $coordinate_x
  * @property int $coordinate_y
+ * @property bool $is_capture
+ * @property bool $is_promotion
  * @property bool $is_check
  * @property bool $is_mate
  */
