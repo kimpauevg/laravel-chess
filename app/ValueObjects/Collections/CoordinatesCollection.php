@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Services\ValueObjects\Collections;
+namespace App\ValueObjects\Collections;
 
-use App\Services\ValueObjects\Coordinates;
+use App\ValueObjects\Coordinates;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\Pure;
 

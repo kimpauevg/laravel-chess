@@ -10,9 +10,12 @@ use App\Models\Builders\ChessGameBuilder;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\Models\ChessGamePieceMove;
-use App\Services\ValueObjects\ChessPieceMoves;
+use App\Services\ChessPieceMoveCalculators\PawnMoveCalculator;
+use App\ValueObjects\ChessPieceMoves;
+use App\ValueObjects\Coordinates;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
+use Illuminate\Support\ItemNotFoundException;
 use Illuminate\Validation\ValidationException;
 
 class ChessGameService
@@ -67,6 +70,8 @@ class ChessGameService
         $coordinate_x = (int) Arr::get($coordinates, 'x');
         $coordinate_y = (int) Arr::get($coordinates, 'y');
 
+        $move_coordinates = new Coordinates($coordinate_x, $coordinate_y);
+
         $move = new ChessGamePieceMove();
 
         $move->chess_game_id = $game->id;
@@ -74,20 +79,20 @@ class ChessGameService
         $move->chess_piece_name = $chess_piece->name;
         $move->previous_coordinate_x = $chess_piece->coordinate_x;
         $move->previous_coordinate_y = $chess_piece->coordinate_y;
-        $move->coordinate_x = $coordinate_x;
-        $move->coordinate_y = $coordinate_y;
+        $move->coordinate_x = $move_coordinates->x;
+        $move->coordinate_y = $move_coordinates->y;
 
         $move_is_movement = $possible_moves->movement_coordinates_collection
-            ->whereCoordinates($coordinate_x, $coordinate_y)
+            ->whereCoordinates($move_coordinates->x, $move_coordinates->y)
             ->exists();
 
         $move_is_capture = $possible_moves->capture_coordinates_collection
-            ->whereCoordinates($coordinate_x, $coordinate_y)
+            ->whereCoordinates($move_coordinates->x, $move_coordinates->y)
             ->exists();
 
         if ($move_is_movement) {
-            $chess_piece->coordinate_x = $coordinate_x;
-            $chess_piece->coordinate_y = $coordinate_y;
+            $chess_piece->coordinate_x = $move_coordinates->x;
+            $chess_piece->coordinate_y = $move_coordinates->y;
 
             $chess_piece->save();
 
@@ -98,13 +103,13 @@ class ChessGameService
         }
 
         if ($move_is_capture) {
-            $captured_piece = $game->pieces->whereCoordinates($coordinate_x, $coordinate_y)->firstOrFail();
+            $captured_piece = $this->getPieceForCapture($game, $chess_piece, $move_coordinates);
 
             $captured_piece->is_captured = true;
             $captured_piece->save();
 
-            $chess_piece->coordinate_x = $coordinate_x;
-            $chess_piece->coordinate_y = $coordinate_y;
+            $chess_piece->coordinate_x = $move_coordinates->x;
+            $chess_piece->coordinate_y = $move_coordinates->y;
 
             $chess_piece->save();
 
@@ -116,6 +121,24 @@ class ChessGameService
         throw ValidationException::withMessages([
             'coordinates' => 'Move is not allowed',
         ]);
+    }
+
+    private function getPieceForCapture(ChessGame $game, ChessGamePiece $piece, Coordinates $coordinates): ChessGamePiece
+    {
+        try {
+            return $game->pieces->whereCoordinates($coordinates->x, $coordinates->y)->firstOrFail();
+        } catch (ItemNotFoundException $exception) {
+            if ($piece->name !== ChessPieceDictionary::PAWN) {
+                throw $exception;
+            }
+
+            // possibly en passante, adjust coordinates
+            /** @var PawnMoveCalculator $move_calculator */
+            $move_calculator = app(PawnMoveCalculator::class);
+            $y_modifier = $move_calculator->getYCoordinateModifierForPawn($piece);
+
+            return $game->pieces->whereCoordinates($coordinates->x, $coordinates->y - $y_modifier)->firstOrFail();
+        }
     }
 
     private function storeDefaultPiecesForGame(ChessGame $game): void

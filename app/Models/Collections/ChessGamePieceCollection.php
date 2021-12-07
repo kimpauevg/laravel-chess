@@ -32,4 +32,9 @@ class ChessGamePieceCollection extends Collection
     {
         return $this->where('coordinate_y', $coordinate);
     }
+
+    public function exists(): bool
+    {
+        return $this->count() > 0;
+    }
 }

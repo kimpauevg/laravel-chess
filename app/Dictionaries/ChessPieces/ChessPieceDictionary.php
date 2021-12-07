@@ -22,11 +22,16 @@ class ChessPieceDictionary
         COLOR_LIGHT = 'light'
     ;
 
+    private const
+        MIN_COORDINATE = 1,
+        MAX_COORDINATE = 8
+    ;
+
     public const
-        MIN_COORDINATE_X = 1,
-        MAX_COORDINATE_X = 8,
-        MIN_COORDINATE_Y = 1,
-        MAX_COORDINATE_Y = 8
+        MIN_COORDINATE_X = self::MIN_COORDINATE,
+        MAX_COORDINATE_X = self::MAX_COORDINATE,
+        MIN_COORDINATE_Y = self::MIN_COORDINATE,
+        MAX_COORDINATE_Y = self::MAX_COORDINATE
     ;
 
     public function getStartingPiecesCollection(): ChessPieceCollection

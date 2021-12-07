@@ -14,8 +14,8 @@ use App\Services\ChessPieceMoveCalculators\KnightMoveCalculator;
 use App\Services\ChessPieceMoveCalculators\PawnMoveCalculator;
 use App\Services\ChessPieceMoveCalculators\QueenMoveCalculator;
 use App\Services\ChessPieceMoveCalculators\RookMoveCalculator;
-use App\Services\ValueObjects\ChessPieceMoves;
-use App\Services\ValueObjects\Collections\CoordinatesCollection;
+use App\ValueObjects\ChessPieceMoves;
+use App\ValueObjects\Collections\CoordinatesCollection;
 
 class ChessPieceMoveResolver
 {

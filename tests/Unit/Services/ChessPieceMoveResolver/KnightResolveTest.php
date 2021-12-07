@@ -21,7 +21,7 @@ class KnightResolveTest extends AbstractResolveTest
          *  g | . . . . . . . . |
          *  f | . . + . + . . . |
          *  e | . + . . . + . . |
-         *  d | . . . Kn. . . . |
+         *  d | . . . N . . . . |
          *  c | . + . . . + . . |
          *  b | . . + . + . . . |
          *  a | . . . . . . . . |
@@ -57,7 +57,7 @@ class KnightResolveTest extends AbstractResolveTest
          *  d | . . . . . . . . |
          *  c | . + . . . . . . |
          *  b | . . + . . . . . |
-         *  a | Kn. . . . . . . |
+         *  a | N . . . . . . . |
          *      1 2 3 4 5 6 7 8
          */
         $expected_coordinates = [

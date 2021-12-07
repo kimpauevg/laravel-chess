@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Services\ChessPieceMoveCalculators;
 
 use App\Services\ChessPieceMoveCalculators\Traits\MovesInDirectionUntilObstacleTrait;
-use App\Services\ValueObjects\CoordinateModifiers;
+use App\ValueObjects\CoordinateModifiers;
 use JetBrains\PhpStorm\Pure;
 
 class RookMoveCalculator extends AbstractChessPieceMoveCalculator

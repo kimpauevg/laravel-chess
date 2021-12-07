@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services\ValueObjects;
+namespace App\ValueObjects;
 
 class CoordinateModifiers
 {

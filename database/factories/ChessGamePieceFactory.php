@@ -31,6 +31,7 @@ class ChessGamePieceFactory extends Factory
     {
         return $this->coordinateX($coordinate_x)->coordinateY($coordinate_y);
     }
+
     public function coordinateX(int $coordinate): self
     {
         return $this->state(['coordinate_x' => $coordinate]);

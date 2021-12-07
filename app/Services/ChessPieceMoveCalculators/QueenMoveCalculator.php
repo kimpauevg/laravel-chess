@@ -6,7 +6,7 @@ namespace App\Services\ChessPieceMoveCalculators;
 
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
-use App\Services\ValueObjects\ChessPieceMoves;
+use App\ValueObjects\ChessPieceMoves;
 
 class QueenMoveCalculator extends AbstractChessPieceMoveCalculator
 {

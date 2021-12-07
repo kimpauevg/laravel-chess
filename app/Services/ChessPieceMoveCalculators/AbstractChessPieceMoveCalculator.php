@@ -7,7 +7,7 @@ namespace App\Services\ChessPieceMoveCalculators;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\Services\ChessPieceMoveCalculators\Traits\ChecksCoordinatesTrait;
-use App\Services\ValueObjects\ChessPieceMoves;
+use App\ValueObjects\ChessPieceMoves;
 
 abstract class AbstractChessPieceMoveCalculator
 {

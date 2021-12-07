@@ -8,7 +8,7 @@ use App\Dictionaries\ChessPieces\ChessPieceDictionary;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\Models\Collections\ChessGamePieceCollection;
-use App\Services\ValueObjects\Coordinates;
+use App\ValueObjects\Coordinates;
 
 trait ChecksCoordinatesTrait
 {

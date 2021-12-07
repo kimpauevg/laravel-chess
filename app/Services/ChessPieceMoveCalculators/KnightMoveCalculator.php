@@ -7,8 +7,8 @@ namespace App\Services\ChessPieceMoveCalculators;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\Services\ChessPieceMoveCalculators\Traits\MovesOnCoordinatesTrait;
-use App\Services\ValueObjects\ChessPieceMoves;
-use App\Services\ValueObjects\Coordinates;
+use App\ValueObjects\ChessPieceMoves;
+use App\ValueObjects\Coordinates;
 use JetBrains\PhpStorm\Pure;
 
 class KnightMoveCalculator extends AbstractChessPieceMoveCalculator

@@ -6,10 +6,10 @@ namespace App\Services\ChessPieceMoveCalculators\Traits;
 
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
-use App\Services\ValueObjects\ChessPieceMoves;
-use App\Services\ValueObjects\Collections\CoordinatesCollection;
-use App\Services\ValueObjects\CoordinateModifiers;
-use App\Services\ValueObjects\Coordinates;
+use App\ValueObjects\ChessPieceMoves;
+use App\ValueObjects\Collections\CoordinatesCollection;
+use App\ValueObjects\CoordinateModifiers;
+use App\ValueObjects\Coordinates;
 
 trait MovesInDirectionUntilObstacleTrait
 {

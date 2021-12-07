@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Services\ValueObjects;
+namespace App\ValueObjects;
 
-use App\Services\ValueObjects\Collections\CoordinatesCollection;
+use App\ValueObjects\Collections\CoordinatesCollection;
 
 class ChessPieceMoves
 {
