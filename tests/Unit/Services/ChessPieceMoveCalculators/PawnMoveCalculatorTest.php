@@ -122,7 +122,8 @@ class PawnMoveCalculatorTest extends AbstractChessPieceMoveTest
         $expected_coordinates = [
             [5, 6]
         ];
-        $this->assertMovesCapturesCollectionEquals($expected_coordinates, $result);
+
+        $this->assertCoordinateCollectionEquals($expected_coordinates, $result->en_passant_coordinates_collection);
     }
 
     private function getCalculator(): PawnMoveCalculator

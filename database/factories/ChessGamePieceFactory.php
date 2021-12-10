@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method ChessGamePiece|ChessGamePieceCollection make($attributes = [], ?Model $parent = null)
  * @method ChessGamePiece|ChessGamePieceCollection create($attributes = [], ?Model $parent = null)
  */
-class ChessGamePieceFactory extends Factory
+class ChessGamePieceFactory extends AbstractFactory
 {
     protected string $model = ChessGamePiece::class;
 
@@ -47,6 +47,11 @@ class ChessGamePieceFactory extends Factory
         return $this->color(ChessPieceDictionary::COLOR_LIGHT);
     }
 
+    public function dark(): self
+    {
+        return $this->color(ChessPieceDictionary::COLOR_DARK);
+    }
+
     public function color(string $color): self
     {
         return $this->state(['color' => $color]);
@@ -55,6 +60,11 @@ class ChessGamePieceFactory extends Factory
     public function pawn(): self
     {
         return $this->name(ChessPieceDictionary::PAWN);
+    }
+
+    public function bishop(): self
+    {
+        return $this->name(ChessPieceDictionary::BISHOP);
     }
 
     public function name(string $name): self

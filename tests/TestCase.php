@@ -20,8 +20,7 @@ abstract class TestCase extends BaseTestCase
         $this->assertCoordinateCollectionEquals($expected_coordinates_array, $actual_coordinates);
     }
 
-
-    private function assertCoordinateCollectionEquals(
+    public function assertCoordinateCollectionEquals(
         array                $expected_coordinates_array,
         CoordinatesCollection $actual_coordinates
     ): void {
@@ -42,7 +41,6 @@ abstract class TestCase extends BaseTestCase
             $this->mapCoordinateCollectionToArray($unreceived_coordinates),
             'Expected coordinates were not received.'
         );
-
     }
     protected function assertMovesCapturesCollectionEquals(
         array                $expected_coordinates_array,

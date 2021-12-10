@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services\ChessPieceMoveCalculators\Traits;
 
-use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\ValueObjects\ChessPieceMoves;
-use App\ValueObjects\Collections\CoordinatesCollection;
 
 trait MovesOnCoordinatesTrait
 {

@@ -37,4 +37,14 @@ class ChessGamePieceCollection extends Collection
     {
         return $this->count() > 0;
     }
+
+    public function whereName(string $name): self
+    {
+        return $this->where('name', $name);
+    }
+
+    public function whereColor(string $color): self
+    {
+        return $this->where('color', $color);
+    }
 }

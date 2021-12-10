@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @method ChessGame|ChessGameCollection make($attributes = [], ?Model $parent = null)
  */
-class ChessGameFactory extends Factory
+class ChessGameFactory extends AbstractFactory
 {
     protected string $model = ChessGame::class;
 
@@ -26,5 +26,10 @@ class ChessGameFactory extends Factory
     public function hasPieces(ChessGamePieceFactory $factory): self
     {
         return $this->has($factory, 'pieces');
+    }
+
+    public function hasMoves(ChessGamePieceMoveFactory $factory): self
+    {
+        return $this->has($factory, 'moves');
     }
 }

@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $coordinate_x
  * @property int $coordinate_y
  * @property bool $is_capture
- * @property bool $is_promotion
+ * @property bool $is_en_passant
  * @property bool $is_check
  * @property bool $is_mate
  */
@@ -30,15 +30,17 @@ class ChessGamePieceMove extends Model
     protected string $table = self::TABLE;
 
     protected array $casts = [
-        'chess_game_id' => 'int',
-        'type'     => 'int',
-        'move_index' => 'int',
+        'chess_game_id'         => 'int',
+        'type'                  => 'int',
+        'move_index'            => 'int',
         'previous_coordinate_x' => 'int',
         'previous_coordinate_y' => 'int',
-        'coordinate_x' => 'int',
-        'coordinate_y' => 'int',
-        'is_check' => 'bool',
-        'is_mate'  => 'bool',
+        'coordinate_x'          => 'int',
+        'coordinate_y'          => 'int',
+        'is_check'              => 'bool',
+        'is_mate'               => 'bool',
+        'is_capture'            => 'bool',
+        'is_en_passant'         => 'bool',
     ];
 
     public function promotion(): HasOne

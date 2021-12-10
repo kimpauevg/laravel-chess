@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Dictionaries\ChessPieces\ChessPieceDictionary;
 use App\Http\Formatters\ChessGameFormatter;
 use App\Http\Requests\MakeMoveRequest;
 use App\Http\Requests\StoreChessGameRequest;
 use App\Models\Collections\ChessGameCollection;
 use App\Services\ChessGameService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -29,12 +29,19 @@ class ChessController extends Controller
         ]);
     }
 
-    public function show(int $id, ChessGameService $service, ChessGameFormatter $formatter): View
-    {
+    public function show(
+        int $id,
+        ChessGameService $service,
+        ChessGameFormatter $formatter,
+        ChessPieceDictionary $chess_piece_dictionary
+    ): View {
         $game = $service->getGameById($id);
 
         return view('chess-game.show', [
             'chess_game' => $formatter->formatOneWithPieces($game),
+            'dictionaries' => [
+                'promotable_chess_piece_names' => $chess_piece_dictionary->names()->whereCanBePromotedTo()
+            ]
         ]);
     }
 
@@ -55,7 +62,7 @@ class ChessController extends Controller
         MakeMoveRequest $request,
         ChessGameService $service
     ): RedirectResponse {
-        $service->makeMove($id, $chess_piece_id, Arr::get($request->validated(), 'coordinates'));
+        $service->makeMove($id, $chess_piece_id, $request->validated());
 
         return back();
     }

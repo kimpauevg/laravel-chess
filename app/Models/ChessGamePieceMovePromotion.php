@@ -17,6 +17,8 @@ class ChessGamePieceMovePromotion extends Model
     public const TABLE = 'chess_game_piece_move_promotions';
     protected string $table = self::TABLE;
 
+    public $timestamps = false;
+
     public function newEloquentBuilder($query): ChessGamePieceMovePromotionBuilder
     {
         return new ChessGamePieceMovePromotionBuilder($query);

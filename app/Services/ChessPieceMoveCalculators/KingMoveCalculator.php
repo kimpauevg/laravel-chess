@@ -22,7 +22,6 @@ class KingMoveCalculator extends AbstractChessPieceMoveCalculator
         return $this->getMovesFromCoordinates($this->getCoordinatesForPiece($piece), $piece);
     }
 
-
     #[Pure] protected function getCoordinatesForPiece(ChessGamePiece $piece): array
     {
         $x = $piece->coordinate_x;

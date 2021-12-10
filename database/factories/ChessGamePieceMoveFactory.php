@@ -8,7 +8,7 @@ use App\Dictionaries\ChessPieces\ChessPieceDictionary;
 use App\Models\ChessGamePieceMove;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ChessGamePieceMoveFactory extends Factory
+class ChessGamePieceMoveFactory extends AbstractFactory
 {
     protected string $model = ChessGamePieceMove::class;
 
@@ -20,16 +20,21 @@ class ChessGamePieceMoveFactory extends Factory
         return [
             'previous_coordinate_x' => $this->faker->numberBetween(...$x_coordinates_between),
             'previous_coordinate_y' => $this->faker->numberBetween(...$y_coordinates_between),
-            'coordinate_x' => $this->faker->numberBetween(...$x_coordinates_between),
-            'coordinate_y' => $this->faker->numberBetween(...$y_coordinates_between),
-            'chess_piece_name' => ChessPieceDictionary::QUEEN,
-            'move_index' => 1
+            'coordinate_x'          => $this->faker->numberBetween(...$x_coordinates_between),
+            'coordinate_y'          => $this->faker->numberBetween(...$y_coordinates_between),
+            'chess_piece_name'      => ChessPieceDictionary::QUEEN,
+            'move_index'            => 1
         ];
     }
 
     public function pawn(): self
     {
         return $this->state(['chess_piece_name' => ChessPieceDictionary::PAWN]);
+    }
+
+    public function moveIndex(int $index): self
+    {
+        return $this->state(['move_index' => $index]);
     }
 
     public function previousCoordinates(int $x, int $y): self

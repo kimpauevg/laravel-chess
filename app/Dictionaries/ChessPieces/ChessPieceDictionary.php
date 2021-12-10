@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Dictionaries\ChessPieces;
 
-use Illuminate\Support\Arr;
-
 class ChessPieceDictionary
 {
     public const
@@ -34,67 +32,24 @@ class ChessPieceDictionary
         MAX_COORDINATE_Y = self::MAX_COORDINATE
     ;
 
-    public function getStartingPiecesCollection(): ChessPieceCollection
+    public const
+        LIGHT_PIECE_STARTING_Y_COORDINATE = self::MIN_COORDINATE_Y,
+        DARK_PIECE_STARTING_Y_COORDINATE = self::MAX_COORDINATE_Y,
+        LIGHT_PAWN_STARTING_Y_COORDINATE = 2,
+        DARK_PAWN_STARTING_Y_COORDINATE = 7
+    ;
+
+    public function names(): ChessPieceCollection
     {
-        $light_pawns = [];
-        $dark_pawns = [];
-
-        $dark_pieces = [];
-        $light_pieces = [];
-
-        $pieces_by_coordinate_x = [
-            1 => self::ROOK,
-            2 => self::KNIGHT,
-            3 => self::BISHOP,
-            4 => self::QUEEN,
-            5 => self::KING,
-            6 => self::BISHOP,
-            7 => self::KNIGHT,
-            8 => self::ROOK,
+        $pieces = [
+            ['name' => self::PAWN, 'title' => 'Pawn'],
+            ['name' => self::BISHOP, 'title' => 'Bishop'],
+            ['name' => self::KNIGHT, 'title' => 'Knight'],
+            ['name' => self::ROOK, 'title' => 'Rook'],
+            ['name' => self::QUEEN, 'title' => 'Queen'],
+            ['name' => self::KING, 'title' => 'King'],
         ];
 
-        for ($coordinate_x = 1; $coordinate_x <= 8; $coordinate_x++) {
-            $light_pawns[] = [
-                'color'       => self::COLOR_LIGHT,
-                'name'        => self::PAWN,
-                'coordinates' => [
-                    'x' => $coordinate_x,
-                    'y' => 2,
-                ],
-            ];
-
-            $dark_pawns[] = [
-                'color'       => self::COLOR_DARK,
-                'name'        => self::PAWN,
-                'coordinates' => [
-                    'x' => $coordinate_x,
-                    'y' => 7,
-                ],
-            ];
-
-            $light_pieces[] = [
-                'color'       => self::COLOR_LIGHT,
-                'name'        => Arr::get($pieces_by_coordinate_x, $coordinate_x),
-                'coordinates' => [
-                    'x' => $coordinate_x,
-                    'y' => 1,
-                ],
-            ];
-
-            $dark_pieces[] = [
-                'color'       => self::COLOR_DARK,
-                'name'        => Arr::get($pieces_by_coordinate_x, $coordinate_x),
-                'coordinates' => [
-                    'x' => $coordinate_x,
-                    'y' => 8,
-                ],
-            ];
-        }
-
-        $all_pieces = array_merge($dark_pawns, $dark_pieces, $light_pawns, $light_pieces);
-
-        $mapped_pieces = collect($all_pieces)->mapInto(ChessPieceEntity::class);
-
-        return new ChessPieceCollection($mapped_pieces);
+        return new ChessPieceCollection(collect($pieces)->mapInto(ChessPieceEntity::class));
     }
 }

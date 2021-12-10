@@ -25,7 +25,5 @@ class ChessControllerShowTest extends TestCase
         $response = $this->get('/chess-games/1');
 
         $response->assertSuccessful();
-
-        $response->assertSee('/images/pieces/light/rook.svg');
     }
 }

@@ -17,10 +17,10 @@ class ChessController extends Controller
         ChessGameService $service,
         CoordinateFormatter $formatter
     ): JsonResponse {
-        $collection = $service->getPossibleMovesForChessPieceById($id, $chess_piece_id);
+        $moves = $service->getPossibleMovesForChessPieceById($id, $chess_piece_id);
 
         return response()->json(
-            $formatter->formatMoves($collection),
+            $formatter->formatMoves($moves),
         );
     }
 }

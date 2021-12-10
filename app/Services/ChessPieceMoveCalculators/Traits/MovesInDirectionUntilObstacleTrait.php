@@ -7,7 +7,6 @@ namespace App\Services\ChessPieceMoveCalculators\Traits;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\ValueObjects\ChessPieceMoves;
-use App\ValueObjects\Collections\CoordinatesCollection;
 use App\ValueObjects\CoordinateModifiers;
 use App\ValueObjects\Coordinates;
 
@@ -24,7 +23,7 @@ trait MovesInDirectionUntilObstacleTrait
         /** @var CoordinateModifiers $coordinate_modifiers */
         foreach ($this->getCoordinateModifiers() as $coordinate_modifiers) {
             $new_moves = $this->findPieceMovesInDirectionUsingModifiers($piece, $coordinate_modifiers);
-            $moves->merge($new_moves);
+            $moves = $moves->merge($new_moves);
         }
 
         return $moves;

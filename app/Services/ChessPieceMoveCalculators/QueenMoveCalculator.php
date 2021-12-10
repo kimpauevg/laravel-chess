@@ -18,13 +18,10 @@ class QueenMoveCalculator extends AbstractChessPieceMoveCalculator
 
     public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): ChessPieceMoves
     {
-        $queen_moves = new ChessPieceMoves();
-
         $rook_moves = $this->rook_move_calculator->calculateMovesForPiece($piece, $game);
-        $queen_moves->merge($rook_moves);
 
         $bishop_moves = $this->bishop_move_calculator->calculateMovesForPiece($piece, $game);
-        $queen_moves->merge($bishop_moves);
+        $queen_moves = $rook_moves->merge($bishop_moves);
 
         return $queen_moves;
     }

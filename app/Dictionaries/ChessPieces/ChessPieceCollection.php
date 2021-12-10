@@ -11,18 +11,18 @@ use Illuminate\Support\Collection;
  */
 class ChessPieceCollection extends Collection
 {
-    public function whereName(string $name): self
+    public function whereCanBePromotedTo(): self
     {
-        return $this->where('name', $name);
+        return $this->whereIn('name', [
+            ChessPieceDictionary::QUEEN,
+            ChessPieceDictionary::KNIGHT,
+            ChessPieceDictionary::ROOK,
+            ChessPieceDictionary::BISHOP,
+        ]);
     }
 
-    public function whereColor(string $color): self
+    public function getNames(): array
     {
-        return $this->where('color', $color);
-    }
-
-    public function whereCoordinateY(int $coordinate): self
-    {
-        return $this->where('coordinate_y', $coordinate);
+        return $this->pluck('name')->toArray();
     }
 }

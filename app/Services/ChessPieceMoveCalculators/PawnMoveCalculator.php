@@ -18,9 +18,6 @@ class PawnMoveCalculator extends AbstractChessPieceMoveCalculator
 {
     use MovesOnCoordinatesTrait;
 
-    public const LIGHT_PAWN_STARTING_Y_COORDINATE = 2;
-    public const DARK_PAWN_STARTING_Y_COORDINATE = 7;
-
     public function calculateMovesForPiece(ChessGamePiece $piece, ChessGame $game): ChessPieceMoves
     {
         $this->setGamePieces($game);
@@ -29,7 +26,8 @@ class PawnMoveCalculator extends AbstractChessPieceMoveCalculator
 
         $moves = new ChessPieceMoves();
         $moves->movement_coordinates_collection = $this->getPawnMovementsUsingModifier($piece, $y_coordinate_modifier);
-        $moves->capture_coordinates_collection = $this->getPawnCapturesUsingModifier($piece, $y_coordinate_modifier, $game);
+        $moves->capture_coordinates_collection = $this->getPawnCapturesUsingModifier($piece, $y_coordinate_modifier);
+        $moves->en_passant_coordinates_collection = $this->getEnPassant($piece, $game);
 
         return $moves;
     }
@@ -37,7 +35,6 @@ class PawnMoveCalculator extends AbstractChessPieceMoveCalculator
     private function getPawnCapturesUsingModifier(
         ChessGamePiece $piece,
         int $y_coordinate_modifier,
-        ChessGame $game
     ): CoordinatesCollection {
         $new_y_coordinate = $piece->coordinate_y + $y_coordinate_modifier;
 
@@ -48,9 +45,7 @@ class PawnMoveCalculator extends AbstractChessPieceMoveCalculator
 
         $moves_on_coordinates = $this->getMovesFromCoordinates($coordinates, $piece);
 
-        $capture_coordinates = $moves_on_coordinates->capture_coordinates_collection;
-
-        return $capture_coordinates->merge($this->getEnPassant($piece, $game));
+        return $moves_on_coordinates->capture_coordinates_collection;
     }
 
     /**
@@ -128,10 +123,10 @@ class PawnMoveCalculator extends AbstractChessPieceMoveCalculator
         );
 
         $is_light_piece_at_starting_point = $piece->color === ChessPieceDictionary::COLOR_LIGHT
-            && $piece->coordinate_y === self::LIGHT_PAWN_STARTING_Y_COORDINATE;
+            && $piece->coordinate_y === ChessPieceDictionary::LIGHT_PAWN_STARTING_Y_COORDINATE;
 
         $is_dark_piece_starting_point = $piece->color === ChessPieceDictionary::COLOR_DARK
-            && $piece->coordinate_y === self::DARK_PAWN_STARTING_Y_COORDINATE;
+            && $piece->coordinate_y === ChessPieceDictionary::DARK_PAWN_STARTING_Y_COORDINATE;
 
         if (
             ($is_light_piece_at_starting_point || $is_dark_piece_starting_point)

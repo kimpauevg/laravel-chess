@@ -41,6 +41,10 @@ $pieces = collect(Arr::get($chess_game, 'pieces', []));
         .board-square-capture.background-light {
             background: #ce2029;
         }
+
+        .modal-content-dark {
+            background: #2a2a2a;
+        }
     </style>
     <div class="col-lg-8 mx-auto mt-2">
         <div class="container-center">
@@ -54,62 +58,142 @@ $pieces = collect(Arr::get($chess_game, 'pieces', []));
                         <div class="board-square {{ $background }}"
                              data-coordinate-x="{{ $horizontal_coordinate }}"
                              data-coordinate-y="{{ $vertical_coordinate }}"
-                             @if ($chess_piece) data-chess-piece-id="{{ Arr::get($chess_piece, 'id') }}" @endif
+                             @if ($chess_piece)
+                             data-chess-piece-id="{{ Arr::get($chess_piece, 'id') }}"
+                             data-chess-piece-color="{{ Arr::get($chess_piece, 'color') }}"
+                             data-chess-piece-name="{{Arr::get($chess_piece, 'name')}}"
+                             @endif
                         >
-                            @if ($chess_piece)
-                                <img src="/images/pieces/{{ Arr::get($chess_piece, 'color') }}/{{Arr::get($chess_piece, 'name')}}.svg">
-                            @endif
                         </div>
                     @endfor
                 @endfor
             </div>
         </div>
     </div>
+    <div class="modal fade" id="select-promotion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content modal-content-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">Select chess piece to promote to:</h5>
+                </div>
+                <div class="modal-body">
+                    @foreach(Arr::get($dictionaries, 'promotable_chess_piece_names') as $name)
+                        <button class="promote-pawn" data-name="{{ $name->name }}">
+                            <img src="/images/pieces/{{ \App\Dictionaries\ChessPieces\ChessPieceDictionary::COLOR_DARK }}/{{$name->name}}.svg">
+                            {{ $name->title }}
+                        </button>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
-        var selected_piece_id = null;
+        var promotion_move_square = null;
+
+        $('.board-square[data-chess-piece-id]').each(function () {
+            let piece_name = $(this).attr('data-chess-piece-name');
+            let color = $(this).attr('data-chess-piece-color');
+            let link = getChessPieceLink(piece_name, color);
+            let image = '<img src="' + link  + '">'
+            $(this).append($(image));
+        });
 
         $('.board-square').click(function () {
-            let square = $(this);
+            let current_square = $(this);
+            let selected_square  = getSelectedSquare();
 
-            if (selected_piece_id === null) {
-                selectPieceOnSquare(square);
+            if (selected_square.length === 0) {
+                selectPieceOnSquare(current_square);
                 return;
             }
 
-            if (selected_piece_id === getSquareChessPieceId(square)) {
+            if (current_square.hasClass('board-square-selected')) {
                 $('.chess-board .board-square')
                     .removeClass('board-square-selected')
                     .removeClass('board-square-move')
-                    .removeClass('board-square-capture')
+                    .removeClass('board-square-capture');
 
 
-                selected_piece_id = null;
                 return;
             }
 
-            if (square.hasClass('board-square-move') || square.hasClass('board-square-capture')) {
-                let url = '{{ route('chess-games.move-chess-piece', ['id' => Arr::get($chess_game, 'id'), 'chess_piece_id' => '%piece_id%']) }}'
-                    .replace('%piece_id%', selected_piece_id);
+            if (current_square.hasClass('board-square-move') || current_square.hasClass('board-square-capture')) {
+                let selected_piece_id = getSquareChessPieceId(selected_square);
 
                 $.ajax({
-                    url: url,
+                    url: getMakeMoveUrlForSquare(selected_piece_id),
                     method: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        coordinates: {
-                            x: square.attr('data-coordinate-x'),
-                            y: square.attr('data-coordinate-y'),
-                        },
-                    },
+                    data: getDataForSquare(current_square),
                     success: function () {
                         location.reload();
+                    },
+                    error: function (data) {
+                        let errors = data.responseJSON.errors;
+
+                        if (errors.promotion_to_piece_name === undefined) {
+                            return;
+                        }
+
+                        let modal = $('#select-promotion');
+                        modal.modal('show');
+
+                        $('.promote-pawn').each(function () {
+                            let piece_name = $(this).attr('data-name');
+                            let color = getChessPieceSquareById(selected_piece_id).attr('data-chess-piece-color');
+                            let image = '<img src="' + getChessPieceLink(piece_name, color) + '">';
+                            $(this).html($(image));
+                        });
+
+                        promotion_move_square = current_square;
                     }
-                })
+                });
             }
         });
 
+        $('.promote-pawn').click(function () {
+            let selected_square = getSelectedSquare();
+            let data = getDataForSquare(promotion_move_square);
+            data.promotion_to_piece_name = $(this).attr('data-name');
+
+            $.ajax({
+                url: getMakeMoveUrlForSquare(getSquareChessPieceId(selected_square)),
+                method: 'POST',
+                data: data,
+                success: function () {
+                    location.reload();
+                },
+            })
+        });
+
+        function getChessPieceSquareById(id) {
+            return $('[data-chess-piece-id=' + id + ']');
+        }
+
+        function getMakeMoveUrlForSquare(piece_id) {
+            return '{{ route('chess-games.move-chess-piece', ['id' => Arr::get($chess_game, 'id'), 'chess_piece_id' => '%piece_id%']) }}'
+                .replace('%piece_id%', piece_id);
+        }
+
+        function getDataForSquare(square) {
+            return {
+                _token: '{{ csrf_token() }}',
+                coordinates: {
+                    x: square.attr('data-coordinate-x'),
+                    y: square.attr('data-coordinate-y'),
+                },
+            };
+        }
+
         function getSquareChessPieceId(square) {
-            return square.attr('data-chess-piece-id')
+            return square.attr('data-chess-piece-id');
+        }
+
+        function getSelectedSquare() {
+            return $('.board-square-selected');
+        }
+
+        function getChessPieceLink(piece_name, color) {
+            return '/images/pieces/' + color + '/' + piece_name + '.svg';
         }
 
         function selectPieceOnSquare(square) {
@@ -119,22 +203,19 @@ $pieces = collect(Arr::get($chess_game, 'pieces', []));
                 return false;
             }
 
-            selected_piece_id = piece_id;
-
             let url = '{{ route('chess-games.ajax.chess-piece-moves', ['id' => Arr::get($chess_game, 'id'), 'chess_piece_id' => '%piece_id%']) }}'
                 .replace('%piece_id%', piece_id);
 
             $.ajax({
                 url: url,
                 success: function (data) {
-                    console.log(data);
                     square.addClass('board-square-selected');
 
                     for (let coordinates of data.movements) {
                         getSelectorForCoordinates(coordinates).addClass('board-square-move');
                     }
-                    for (let coordinates of data.captures) {
-                        getSelectorForCoordinates(coordinates).addClass('board-square-capture')
+                    for (let coordinates of data.captures.concat(data.en_passants)) {
+                        getSelectorForCoordinates(coordinates).addClass('board-square-capture');
                     }
                 }
             });
