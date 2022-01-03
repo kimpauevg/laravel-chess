@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Dictionaries\ChessPieces\ChessPieceDictionary;
+use App\Dictionaries\ChessPieceColors\ChessPieceColorDictionary;
+use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;
 use App\Models\ChessGamePiece;
 use App\Models\Collections\ChessGamePieceCollection;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -16,58 +16,73 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ChessGamePieceFactory extends AbstractFactory
 {
-    protected string $model = ChessGamePiece::class;
+    protected $model = ChessGamePiece::class;
 
     public function definition(): array
     {
         return [
-            'color'        => ChessPieceDictionary::COLOR_LIGHT,
+            'color'        => ChessPieceColorDictionary::LIGHT,
             'coordinate_x' => $this->faker->numberBetween(1, 8),
             'coordinate_y' => $this->faker->numberBetween(1, 8),
         ];
     }
 
-    public function coordinates(int $coordinate_x, int $coordinate_y): self
+    public function coordinates(int $coordinate_x, int $coordinate_y): static
     {
         return $this->coordinateX($coordinate_x)->coordinateY($coordinate_y);
     }
 
-    public function coordinateX(int $coordinate): self
+    public function coordinateX(int $coordinate): static
     {
         return $this->state(['coordinate_x' => $coordinate]);
     }
 
-    public function coordinateY(int $coordinate): self
+    public function coordinateY(int $coordinate): static
     {
         return $this->state(['coordinate_y' => $coordinate]);
     }
 
-    public function light(): self
+    public function light(): static
     {
-        return $this->color(ChessPieceDictionary::COLOR_LIGHT);
+        return $this->color(ChessPieceColorDictionary::LIGHT);
     }
 
-    public function dark(): self
+    public function dark(): static
     {
-        return $this->color(ChessPieceDictionary::COLOR_DARK);
+        return $this->color(ChessPieceColorDictionary::DARK);
     }
 
-    public function color(string $color): self
+    public function color(string $color): static
     {
         return $this->state(['color' => $color]);
     }
 
-    public function pawn(): self
+    public function pawn(): static
     {
-        return $this->name(ChessPieceDictionary::PAWN);
+        return $this->name(ChessPieceNameDictionary::PAWN);
     }
 
-    public function bishop(): self
+    public function bishop(): static
     {
-        return $this->name(ChessPieceDictionary::BISHOP);
+        return $this->name(ChessPieceNameDictionary::BISHOP);
     }
 
-    public function name(string $name): self
+    public function rook(): static
+    {
+        return $this->name(ChessPieceNameDictionary::ROOK);
+    }
+
+    public function knight(): static
+    {
+        return $this->name(ChessPieceNameDictionary::KNIGHT);
+    }
+
+    public function king(): static
+    {
+        return $this->name(ChessPieceNameDictionary::KING);
+    }
+
+    public function name(string $name): static
     {
         return $this->state(['name' => $name]);
     }

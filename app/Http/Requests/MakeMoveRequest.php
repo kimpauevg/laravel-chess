@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use App\Dictionaries\ChessPieces\ChessPieceDictionary;
+use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -12,10 +12,10 @@ class MakeMoveRequest extends FormRequest
 {
     public function rules(): array
     {
-        /** @var ChessPieceDictionary $dictionary */
-        $dictionary = app(ChessPieceDictionary::class);
+        /** @var ChessPieceNameDictionary $dictionary */
+        $dictionary = app(ChessPieceNameDictionary::class);
 
-        $names = $dictionary->names()->whereCanBePromotedTo()->getNames();
+        $names = $dictionary->all()->whereCanBePromotedTo()->getNames();
 
         return [
             'coordinates'             => ['required', 'array'],

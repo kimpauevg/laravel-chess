@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Ajax;
 
-use App\Dictionaries\ChessPieces\ChessPieceDictionary;
 use Database\Factories\ChessGameFactory;
 use Database\Factories\ChessGamePieceFactory;
 use Illuminate\Support\Arr;
@@ -14,15 +13,11 @@ class ChessControllerGetChessPieceMovesTest extends TestCase
 {
     public function testFormatting(): void
     {
-        ChessGameFactory::new(['id' => 1])
+        ChessGameFactory::new()->id(1)
             ->hasPieces(
-                ChessGamePieceFactory::new([
-                    'id'           => 1,
-                    'coordinate_x' => 1,
-                    'coordinate_y' => 2,
-                    'color'        => ChessPieceDictionary::COLOR_LIGHT,
-                    'name'         => ChessPieceDictionary::PAWN,
-                ])
+                ChessGamePieceFactory::new()->id(1)
+                    ->light()->pawn()
+                    ->coordinates(1, 2)
             )
             ->create();
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers;
 
-use App\Dictionaries\ChessPieces\ChessPieceDictionary;
+use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;
 use Database\Factories\ChessGameFactory;
 use Database\Factories\ChessGamePieceFactory;
 use Tests\Feature\TestCase;
@@ -13,12 +13,11 @@ class ChessControllerShowTest extends TestCase
 {
     public function testShow(): void
     {
-        ChessGameFactory::new(['id' => 1, 'name' => 'Test Game'])
+        ChessGameFactory::new(['id' => 1, 'name' => 'Test Game'])->id(1)
+            ->name('Test Game')
             ->hasPieces(
-                ChessGamePieceFactory::new([
-                        'name'  => ChessPieceDictionary::ROOK,
-                        'color' => ChessPieceDictionary::COLOR_LIGHT,
-                ])
+                ChessGamePieceFactory::new()
+                    ->name(ChessPieceNameDictionary::ROOK)->light()
             )
             ->create();
 

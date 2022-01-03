@@ -4,13 +4,134 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services\ChessPieceMoveCalculators;
 
+use App\Dictionaries\ChessPieceColors\ChessPieceColorDictionary;
+use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;
+use App\Models\ChessGamePiece;
 use App\Models\Collections\ChessGamePieceMoveCollection;
-use App\Services\ChessPieceMoveCalculators\PawnMoveCalculator;
+use App\Services\MoveCalculators\PawnMoveCalculator;
 use Database\Factories\ChessGamePieceFactory;
 use Database\Factories\ChessGamePieceMoveFactory;
 
-class PawnMoveCalculatorTest extends AbstractChessPieceMoveTest
+class PawnMoveCalculatorTest extends AbstractChessPieceMoveCalculatorTest
 {
+    public function testLightMoveFromStartingPosition(): void
+    {
+        $piece = $this->makeLightPawnWithCoordinates(4, 2);
+
+        $collection = $this->getMovesOnEmptyTableForPiece($piece);
+
+        /**
+         *  h | . . . . . . . . |
+         *  g | . . . . . . . . |
+         *  f | . . . . . . . . |
+         *  e | . . . . . . . . |
+         *  d | . . . + . . . . |
+         *  c | . . . + . . . . |
+         *  b | . . . P . . . . |
+         *  a | . . . . . . . . |
+         *      1 2 3 4 5 6 7 8
+         */
+        $expected_coordinates = [
+            [4, 3],
+            [4, 4],
+        ];
+
+        $this->assertMovesMovementCollectionEquals($expected_coordinates, $collection);
+    }
+
+    public function testLightMoveFromNonStartingPosition(): void
+    {
+        $piece = $this->makeLightPawnWithCoordinates(4, 3);
+
+        $collection = $this->getMovesOnEmptyTableForPiece($piece);
+
+        /**
+         *  h | . . . . . . . . |
+         *  g | . . . . . . . . |
+         *  f | . . . . . . . . |
+         *  e | . . . . . . . . |
+         *  d | . . . + . . . . |
+         *  c | . . . P . . . . |
+         *  b | . . . . . . . . |
+         *  a | . . . . . . . . |
+         *      1 2 3 4 5 6 7 8
+         */
+        $expected_coordinates = [
+            [4, 4],
+        ];
+
+        $this->assertMovesMovementCollectionEquals($expected_coordinates, $collection);
+    }
+
+    public function testDarkMoveFromStartingPosition(): void
+    {
+        $piece = $this->makeDarkPawnWithCoordinates(4, 7);
+
+        $collection = $this->getMovesOnEmptyTableForPiece($piece);
+
+        /**
+         *  h | . . . . . . . . |
+         *  g | . . . P . . . . |
+         *  f | . . . + . . . . |
+         *  e | . . . + . . . . |
+         *  d | . . . . . . . . |
+         *  c | . . . . . . . . |
+         *  b | . . . . . . . . |
+         *  a | . . . . . . . . |
+         *      1 2 3 4 5 6 7 8
+         */
+        $expected_coordinates = [
+            [4, 6],
+            [4, 5],
+        ];
+
+        $this->assertMovesMovementCollectionEquals($expected_coordinates, $collection);
+    }
+
+    public function testDarkMoveFromNonStartingPosition(): void
+    {
+        $piece = $this->makeDarkPawnWithCoordinates(4, 6);
+
+        $collection = $this->getMovesOnEmptyTableForPiece($piece);
+
+        /**
+         *  h | . . . . . . . . |
+         *  g | . . . . . . . . |
+         *  f | . . . P . . . . |
+         *  e | . . . + . . . . |
+         *  d | . . . . . . . . |
+         *  c | . . . . . . . . |
+         *  b | . . . . . . . . |
+         *  a | . . . . . . . . |
+         *      1 2 3 4 5 6 7 8
+         */
+        $expected_coordinates = [
+            [4, 5],
+        ];
+
+        $this->assertMovesMovementCollectionEquals($expected_coordinates, $collection);
+    }
+
+    private function makeDarkPawnWithCoordinates(int $x, int $y): ChessGamePiece
+    {
+        return $this->makeGamePieceWithCoordinates(
+            ChessPieceNameDictionary::PAWN,
+            ChessPieceColorDictionary::DARK,
+            $x,
+            $y
+        );
+    }
+
+    private function makeLightPawnWithCoordinates(int $x, int $y): ChessGamePiece
+    {
+        return $this->makeGamePieceWithCoordinates(
+            ChessPieceNameDictionary::PAWN,
+            ChessPieceColorDictionary::LIGHT,
+            $x,
+            $y
+        );
+    }
+
     public function testBlockedByAnotherFigure(): void
     {
         /**
@@ -38,7 +159,7 @@ class PawnMoveCalculatorTest extends AbstractChessPieceMoveTest
                 ->make()
         ]);
 
-        $move_collection = $this->getCalculator()->calculateMovesForPiece($pawn_to_test, $game);
+        $move_collection = $this->getCalculator()->calculateMovesForPieceInGame($pawn_to_test, $game);
 
         $expected_coordinates = [];
 
@@ -72,7 +193,7 @@ class PawnMoveCalculatorTest extends AbstractChessPieceMoveTest
                 ->make()
         ]);
 
-        $move_collection = $this->getCalculator()->calculateMovesForPiece($pawn_to_test, $game);
+        $move_collection = $this->getCalculator()->calculateMovesForPieceInGame($pawn_to_test, $game);
 
         $expected_coordinates = [
             [4, 3],
@@ -117,7 +238,7 @@ class PawnMoveCalculatorTest extends AbstractChessPieceMoveTest
 
         $calculator = $this->getCalculator();
 
-        $result = $calculator->calculateMovesForPiece($pawn_to_test, $game);
+        $result = $calculator->calculateMovesForPieceInGame($pawn_to_test, $game);
 
         $expected_coordinates = [
             [5, 6]
@@ -128,6 +249,6 @@ class PawnMoveCalculatorTest extends AbstractChessPieceMoveTest
 
     private function getCalculator(): PawnMoveCalculator
     {
-        return app(PawnMoveCalculator::class);
+        return $this->app->make(PawnMoveCalculator::class);
     }
 }

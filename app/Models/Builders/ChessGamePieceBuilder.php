@@ -15,7 +15,7 @@ class ChessGamePieceBuilder extends Builder
 {
     public const SCOPE_NOT_CAPTURED = 'not_captured';
 
-    public function whereNotCaptured(): self
+    public function whereNotCaptured(): static
     {
         return $this->where('is_captured', false);
     }

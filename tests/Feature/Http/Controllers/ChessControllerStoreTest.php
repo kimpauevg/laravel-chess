@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers;
 
-use App\Dictionaries\ChessPieces\ChessPieceDictionary;
+use App\Dictionaries\ChessPieceColors\ChessPieceColorDictionary;
+use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;
 use App\Models\Builders\ChessGamePieceBuilder;
 use App\Models\ChessGame;
 use Tests\Feature\TestCase;
@@ -25,37 +26,37 @@ class ChessControllerStoreTest extends TestCase
         $pieces_query = app(ChessGamePieceBuilder::class);
         $pieces = $pieces_query->get();
 
-        $light_pawns = $pieces->whereName(ChessPieceDictionary::PAWN)
+        $light_pawns = $pieces->whereName(ChessPieceNameDictionary::PAWN)
             ->whereCoordinateY(2)
-            ->whereColor(ChessPieceDictionary::COLOR_LIGHT)
+            ->whereColor(ChessPieceColorDictionary::LIGHT)
             ->count();
         $this->assertEquals(8, $light_pawns);
 
-        $dark_pawns = $pieces->whereName(ChessPieceDictionary::PAWN)
+        $dark_pawns = $pieces->whereName(ChessPieceNameDictionary::PAWN)
             ->whereCoordinateY(7)
-            ->whereColor(ChessPieceDictionary::COLOR_DARK)
+            ->whereColor(ChessPieceColorDictionary::DARK)
             ->count();
         $this->assertEquals(8, $dark_pawns);
 
         $correct_name_order = [
-            ChessPieceDictionary::ROOK,
-            ChessPieceDictionary::KNIGHT,
-            ChessPieceDictionary::BISHOP,
-            ChessPieceDictionary::QUEEN,
-            ChessPieceDictionary::KING,
-            ChessPieceDictionary::BISHOP,
-            ChessPieceDictionary::KNIGHT,
-            ChessPieceDictionary::ROOK,
+            ChessPieceNameDictionary::ROOK,
+            ChessPieceNameDictionary::KNIGHT,
+            ChessPieceNameDictionary::BISHOP,
+            ChessPieceNameDictionary::QUEEN,
+            ChessPieceNameDictionary::KING,
+            ChessPieceNameDictionary::BISHOP,
+            ChessPieceNameDictionary::KNIGHT,
+            ChessPieceNameDictionary::ROOK,
         ];
 
         $light_pieces_names_order = $pieces->whereCoordinateY(1)
-            ->whereColor(ChessPieceDictionary::COLOR_LIGHT)
+            ->whereColor(ChessPieceColorDictionary::LIGHT)
             ->sortBy('coordinate_x')
             ->pluck('name')
             ->toArray();
 
         $dark_pieces_names_order = $pieces->whereCoordinateY(8)
-            ->whereColor(ChessPieceDictionary::COLOR_DARK)
+            ->whereColor(ChessPieceColorDictionary::DARK)
             ->sortBy('coordinate_x')
             ->pluck('name')
             ->toArray();

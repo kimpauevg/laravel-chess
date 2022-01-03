@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 class ChessGamePieceMovePromotion extends Model
 {
     public const TABLE = 'chess_game_piece_move_promotions';
-    protected string $table = self::TABLE;
+    protected $table = self::TABLE;
 
     public $timestamps = false;
 
@@ -24,6 +24,7 @@ class ChessGamePieceMovePromotion extends Model
         return new ChessGamePieceMovePromotionBuilder($query);
     }
 
+    /** @codeCoverageIgnore */
     public function newCollection(array $models = []): ChessGamePieceMovePromotionCollection
     {
         return new ChessGamePieceMovePromotionCollection($models);

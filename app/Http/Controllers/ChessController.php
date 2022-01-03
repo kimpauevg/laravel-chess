@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Dictionaries\ChessPieces\ChessPieceDictionary;
+use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;
 use App\Http\Formatters\ChessGameFormatter;
 use App\Http\Requests\MakeMoveRequest;
 use App\Http\Requests\StoreChessGameRequest;
@@ -33,14 +33,14 @@ class ChessController extends Controller
         int $id,
         ChessGameService $service,
         ChessGameFormatter $formatter,
-        ChessPieceDictionary $chess_piece_dictionary
+        ChessPieceNameDictionary $chess_piece_dictionary
     ): View {
         $game = $service->getGameById($id);
 
         return view('chess-game.show', [
-            'chess_game' => $formatter->formatOneWithPieces($game),
+            'chess_game'   => $formatter->formatOneWithPieces($game),
             'dictionaries' => [
-                'promotable_chess_piece_names' => $chess_piece_dictionary->names()->whereCanBePromotedTo()
+                'promotable_chess_piece_names' => $chess_piece_dictionary->all()->whereCanBePromotedTo()
             ]
         ]);
     }

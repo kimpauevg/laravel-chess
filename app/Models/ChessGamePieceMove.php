@@ -27,9 +27,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class ChessGamePieceMove extends Model
 {
     public const TABLE = 'chess_game_piece_moves';
-    protected string $table = self::TABLE;
+    protected $table = self::TABLE;
 
-    protected array $casts = [
+    protected $casts = [
         'chess_game_id'         => 'int',
         'type'                  => 'int',
         'move_index'            => 'int',

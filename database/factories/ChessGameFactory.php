@@ -6,7 +6,6 @@ namespace Database\Factories;
 
 use App\Models\ChessGame;
 use App\Models\Collections\ChessGameCollection;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -14,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ChessGameFactory extends AbstractFactory
 {
-    protected string $model = ChessGame::class;
+    protected $model = ChessGame::class;
 
     public function definition(): array
     {
@@ -23,13 +22,18 @@ class ChessGameFactory extends AbstractFactory
         ];
     }
 
-    public function hasPieces(ChessGamePieceFactory $factory): self
+    public function hasPieces(ChessGamePieceFactory $factory): static
     {
         return $this->has($factory, 'pieces');
     }
 
-    public function hasMoves(ChessGamePieceMoveFactory $factory): self
+    public function hasMoves(ChessGamePieceMoveFactory $factory): static
     {
         return $this->has($factory, 'moves');
+    }
+
+    public function name(string $name): static
+    {
+        return $this->state(['name' => $name]);
     }
 }

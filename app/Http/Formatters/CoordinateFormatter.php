@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Formatters;
 
-use App\ValueObjects\ChessPieceMoves;
-use App\ValueObjects\Collections\CoordinatesCollection;
+use App\DTO\ChessPieceMoves;
+use App\DTO\Collections\CoordinatesCollection;
 
 class CoordinateFormatter
 {

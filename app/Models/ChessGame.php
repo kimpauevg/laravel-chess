@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Dictionaries\ChessPieceColors\ChessPieceColorDictionary;
 use App\Models\Builders\ChessGameBuilder;
 use App\Models\Collections\ChessGameCollection;
 use App\Models\Collections\ChessGamePieceCollection;
@@ -25,7 +26,7 @@ class ChessGame extends Model
 {
     public const TABLE = 'chess_games';
 
-    protected string $table = self::TABLE;
+    protected $table = self::TABLE;
 
     public function pieces(): HasMany
     {
@@ -45,5 +46,27 @@ class ChessGame extends Model
     public function newCollection(array $models = []): ChessGameCollection
     {
         return new ChessGameCollection($models);
+    }
+
+    public function getNextMoveChessPieceColor(): string
+    {
+        $total_moves = $this->moves->count();
+
+        if ($total_moves % 2 === 0) {
+            return ChessPieceColorDictionary::LIGHT;
+        }
+
+        return ChessPieceColorDictionary::DARK;
+    }
+
+    public function getPreviousMoveChessPieceColor(): string
+    {
+        $next_move_color = $this->getNextMoveChessPieceColor();
+
+        if ($next_move_color === ChessPieceColorDictionary::LIGHT) {
+            return ChessPieceColorDictionary::DARK;
+        }
+
+        return ChessPieceColorDictionary::LIGHT;
     }
 }

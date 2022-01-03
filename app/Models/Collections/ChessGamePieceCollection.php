@@ -18,32 +18,27 @@ class ChessGamePieceCollection extends Collection
         return $this->firstOrFail('id', $id);
     }
 
-    public function whereCoordinates(int $x, int $y): self
+    public function whereCoordinates(int $x, int $y): static
     {
         return $this->whereCoordinateX($x)->whereCoordinateY($y);
     }
 
-    public function whereCoordinateX(int $coordinate): self
+    public function whereCoordinateX(int $coordinate): static
     {
         return $this->where('coordinate_x', $coordinate);
     }
 
-    public function whereCoordinateY(int $coordinate): self
+    public function whereCoordinateY(int $coordinate): static
     {
         return $this->where('coordinate_y', $coordinate);
     }
 
-    public function exists(): bool
-    {
-        return $this->count() > 0;
-    }
-
-    public function whereName(string $name): self
+    public function whereName(string $name): static
     {
         return $this->where('name', $name);
     }
 
-    public function whereColor(string $color): self
+    public function whereColor(string $color): static
     {
         return $this->where('color', $color);
     }

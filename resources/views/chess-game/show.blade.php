@@ -79,7 +79,7 @@ $pieces = collect(Arr::get($chess_game, 'pieces', []));
                 <div class="modal-body">
                     @foreach(Arr::get($dictionaries, 'promotable_chess_piece_names') as $name)
                         <button class="promote-pawn" data-name="{{ $name->name }}">
-                            <img src="/images/pieces/{{ \App\Dictionaries\ChessPieces\ChessPieceDictionary::COLOR_DARK }}/{{$name->name}}.svg">
+                            <img src="/images/pieces/{{ \App\Dictionaries\ChessPieceColors\ChessPieceColorDictionary::DARK }}/{{$name->name}}.svg">
                             {{ $name->title }}
                         </button>
                     @endforeach

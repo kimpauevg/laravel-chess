@@ -20,9 +20,9 @@ use Illuminate\Database\Eloquent\Model;
 class ChessGamePiece extends Model
 {
     public const TABLE = 'chess_game_pieces';
-    protected string $table = self::TABLE;
+    protected $table = self::TABLE;
 
-    protected array $casts = [
+    protected $casts = [
         'chess_game_id' => 'int',
         'is_captured'   => 'bool',
         'coordinate_x'  => 'int',

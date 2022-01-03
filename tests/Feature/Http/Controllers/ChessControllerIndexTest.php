@@ -35,8 +35,10 @@ class ChessControllerIndexTest extends TestCase
             $mock->shouldReceive('getPerPage')->andReturn(2);
         });
 
+        // act
         $response = $this->get('/?page=2');
 
+        // assert
         $response->assertSee('/?page=1');
         $response->assertSee('/?page=3');
     }

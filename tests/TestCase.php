@@ -2,9 +2,9 @@
 
 namespace Tests;
 
-use App\ValueObjects\ChessPieceMoves;
-use App\ValueObjects\Collections\CoordinatesCollection;
-use App\ValueObjects\Coordinates;
+use App\DTO\ChessPieceMoves;
+use App\DTO\Collections\CoordinatesCollection;
+use App\DTO\Coordinates;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Arr;
 
