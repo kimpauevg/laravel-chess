@@ -8,12 +8,14 @@ use App\Dictionaries\ChessPieceColors\ChessPieceColorDictionary;
 use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;
 use App\Dictionaries\ChessPieceCoordinates\ChessPieceCoordinateDictionary;
 use App\DTO\ChessMoveDataDTO;
+use App\DTO\Collections\CoordinatesCollection;
 use App\Models\Builders\ChessGameBuilder;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\Models\Collections\ChessGamePieceCollection;
 use App\DTO\ChessPieceMoves;
 use App\DTO\Coordinates;
+use App\Models\Collections\ChessGamePieceMoveCollection;
 use App\Services\MovePerformers\DatabaseChessMovePerformer;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
@@ -101,7 +103,7 @@ class ChessGameService
         $move_dto = new ChessMoveDataDTO($game, $chess_piece, $move_coordinates);
         $move_dto->promotion_to_piece_name = $promotion_to_piece_name;
 
-        $move_performer->makeMove($move_dto);
+        $move_performer->performMove($move_dto);
     }
 
     private function storeDefaultPiecesForGame(ChessGame $game): void
@@ -168,5 +170,37 @@ class ChessGameService
     private function getBuilder(): ChessGameBuilder
     {
         return app(ChessGameBuilder::class);
+    }
+
+    public function cloneGame(ChessGame $game): ChessGame
+    {
+        $game_clone = clone $game;
+
+        $game_clone->moves = new ChessGamePieceMoveCollection($game_clone->moves->all());
+
+        $game_clone_pieces = [];
+
+        foreach ($game_clone->pieces as $piece) {
+            $game_clone_pieces[] = clone $piece;
+        }
+
+        $game_clone->pieces = new ChessGamePieceCollection($game_clone_pieces);
+
+        return $game_clone;
+    }
+
+    public function filterCheckCaptureMoves(ChessPieceMoves $moves, ChessGame $game): CoordinatesCollection
+    {
+        $capture_coordinates_array = [];
+
+        foreach ($moves->capture_coordinates_collection->all() as $capture_coordinates) {
+            $piece_on_coordinates = $game->pieces->whereCoordinatesDTO($capture_coordinates)->first();
+
+            if ($piece_on_coordinates?->name === ChessPieceNameDictionary::KING) {
+                $capture_coordinates_array[] = $capture_coordinates;
+            }
+        }
+
+        return new CoordinatesCollection($capture_coordinates_array);
     }
 }

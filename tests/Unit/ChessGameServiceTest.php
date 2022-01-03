@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Services;
+namespace Tests\Unit;
 
 use App\Models\Builders\ChessGameBuilder;
 use App\Models\ChessGame;

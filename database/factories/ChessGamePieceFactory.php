@@ -82,8 +82,18 @@ class ChessGamePieceFactory extends AbstractFactory
         return $this->name(ChessPieceNameDictionary::KING);
     }
 
+    public function queen(): static
+    {
+        return $this->name(ChessPieceNameDictionary::QUEEN);
+    }
+
     public function name(string $name): static
     {
         return $this->state(['name' => $name]);
+    }
+
+    public function gameId(int $id): static
+    {
+        return $this->state(['chess_game_id' => $id]);
     }
 }

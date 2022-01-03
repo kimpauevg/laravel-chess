@@ -10,8 +10,6 @@ use App\DTO\ChessPieceMoves;
 use App\DTO\Collections\CoordinatesCollection;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
-use App\Models\Collections\ChessGamePieceCollection;
-use App\Models\Collections\ChessGamePieceMoveCollection;
 use App\Services\MoveCalculators\ChessPieceMoveCalculatorFactory;
 use App\Services\MovePerformers\DBLessChessMovePerformer;
 
@@ -20,6 +18,7 @@ class ChessPieceMoveResolver
     public function __construct(
         private ChessPieceMoveCalculatorFactory $move_calculator_factory,
         private DBLessChessMovePerformer $dbless_chess_move_performer,
+        private ChessGameService $chess_game_service,
     ) {
     }
 
@@ -69,19 +68,19 @@ class ChessPieceMoveResolver
         ChessGamePiece $piece,
         ChessGame $game,
     ): CoordinatesCollection {
-        $player_made_check_color = $game->getPreviousMoveChessPieceColor();
+        $player_made_check_color = $game->getLastMoveChessPieceColor();
 
         $valid_movements = [];
 
         foreach ($collection->all() as $move_coordinates) {
-            $game_clone = $this->cloneGame($game);
+            $game_clone = $this->chess_game_service->cloneGame($game);
 
             $piece_clone = $game_clone->pieces->findOrFail($piece->id);
 
             $move_dto = new ChessMoveDataDTO($game_clone, $piece_clone, $move_coordinates);
             $move_dto->promotion_to_piece_name = ChessPieceNameDictionary::QUEEN;
 
-            $this->dbless_chess_move_performer->makeMove($move_dto);
+            $this->dbless_chess_move_performer->performMove($move_dto);
 
             if (!$this->canColoredPiecesCaptureKingInGame($player_made_check_color, $game_clone)) {
                 $valid_movements[] = $move_coordinates;
@@ -97,28 +96,11 @@ class ChessPieceMoveResolver
             $checking_moves = $this->move_calculator_factory->make($checking_piece)
                 ->calculateMovesForPieceInGame($checking_piece, $game);
 
-            if ($this->dbless_chess_move_performer->movesForGameHaveKingCapture($checking_moves, $game)) {
+            if ($this->chess_game_service->filterCheckCaptureMoves($checking_moves, $game)->count() > 0) {
                 return true;
             }
         }
 
         return false;
-    }
-
-    private function cloneGame(ChessGame $game): ChessGame
-    {
-        $game_clone = clone $game;
-
-        $game_clone->moves = new ChessGamePieceMoveCollection($game_clone->moves->all());
-
-        $game_clone_pieces = [];
-
-        foreach ($game_clone->pieces as $piece) {
-            $game_clone_pieces[] = clone $piece;
-        }
-
-        $game_clone->pieces = new ChessGamePieceCollection($game_clone_pieces);
-
-        return $game_clone;
     }
 }

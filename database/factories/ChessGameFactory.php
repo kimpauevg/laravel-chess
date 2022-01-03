@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @method ChessGame|ChessGameCollection make($attributes = [], ?Model $parent = null)
+ * @method ChessGame|ChessGameCollection create($attributes = [], ?Model $parent = null)
  */
 class ChessGameFactory extends AbstractFactory
 {

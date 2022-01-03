@@ -59,7 +59,7 @@ class ChessGame extends Model
         return ChessPieceColorDictionary::DARK;
     }
 
-    public function getPreviousMoveChessPieceColor(): string
+    public function getLastMoveChessPieceColor(): string
     {
         $next_move_color = $this->getNextMoveChessPieceColor();
 

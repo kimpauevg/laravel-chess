@@ -35,6 +35,11 @@ class CoordinatesCollection extends Collection
         return $this->whereX($x)->whereY($y);
     }
 
+    public function whereCoordinatesDTO(Coordinates $coordinates): static
+    {
+        return $this->whereCoordinates($coordinates->x, $coordinates->y);
+    }
+
     public function exists(): bool
     {
         return $this->count() > 0;

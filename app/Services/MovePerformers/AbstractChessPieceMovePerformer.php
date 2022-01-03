@@ -8,22 +8,17 @@ use App\Dictionaries\ChessPieceColors\ChessPieceColorDictionary;
 use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;
 use App\Dictionaries\ChessPieceCoordinates\ChessPieceCoordinateDictionary;
 use App\DTO\ChessMoveDataDTO;
-use App\DTO\ChessPieceMoves;
 use App\DTO\Coordinates;
-use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\Models\ChessGamePieceMove;
 use App\Models\ChessGamePieceMovePromotion;
 use App\Services\MoveCalculators\ChessPieceMoveCalculatorFactory;
-use App\Services\MoveCalculators\PawnMoveCalculator;
 use Illuminate\Validation\ValidationException;
 
 abstract class AbstractChessPieceMovePerformer
 {
-    protected ChessGamePieceMove $current_move;
-
     public function __construct(
-        private ChessPieceMoveCalculatorFactory $chess_piece_move_calculator_factory,
+        protected ChessPieceMoveCalculatorFactory $chess_piece_move_calculator_factory,
     ) {
     }
 
@@ -34,156 +29,155 @@ abstract class AbstractChessPieceMovePerformer
     /**
      * @throws ValidationException
      */
-    public function makeMove(ChessMoveDataDTO $move_dto): void
+    public function performMove(ChessMoveDataDTO $move_dto): void
     {
-        $piece = $move_dto->piece;
-        $game = $move_dto->game;
-        $coordinates = $move_dto->move_coordinates;
-        $promotion_to_piece_name = $move_dto->promotion_to_piece_name;
+        $move = $this->tryToPerformMove($move_dto);
 
-        $possible_moves = $this->chess_piece_move_calculator_factory->make($piece)
-            ->calculateMovesForPieceInGame($piece, $game);
+        $move_dto->game->moves->add($move);
+    }
 
-        $move = new ChessGamePieceMove();
+    private function tryToPerformMove(ChessMoveDataDTO $move_dto): ChessGamePieceMove
+    {
+        $possible_moves = $this->chess_piece_move_calculator_factory->make($move_dto->piece)
+            ->calculateMovesForPieceInGame($move_dto->piece, $move_dto->game);
 
-        $move->chess_game_id = $game->id;
-        $move->move_index = $game->moves->getLastMoveIndex() + 1;
-        $move->chess_piece_name = $piece->name;
-        $move->previous_coordinate_x = $piece->coordinate_x;
-        $move->previous_coordinate_y = $piece->coordinate_y;
-        $move->coordinate_x = $coordinates->x;
-        $move->coordinate_y = $coordinates->y;
+        $move_is_movement = $possible_moves->movement_coordinates_collection
+            ->whereCoordinatesDTO($move_dto->move_coordinates)
+            ->exists();
 
-        $this->current_move = $move;
+        if ($move_is_movement) {
+            return $this->performMovement($move_dto);
+        }
 
-        $move_is_promotion = $this->shouldBePromoted($piece, $coordinates);
+        $move_is_capture = $possible_moves->capture_coordinates_collection
+            ->whereCoordinatesDTO($move_dto->move_coordinates)
+            ->exists();
 
-        if ($move_is_promotion && is_null($promotion_to_piece_name)) {
+        if ($move_is_capture) {
+            return $this->performCapture($move_dto);
+        }
+
+        $move_is_en_passant = $possible_moves->en_passant_coordinates_collection
+            ->whereCoordinatesDTO($move_dto->move_coordinates)
+            ->exists();
+
+        if ($move_is_en_passant) {
+            return $this->performEnPassant($move_dto);
+        }
+
+        $move_is_promotion = $this->shouldBePromoted($move_dto->piece, $move_dto->move_coordinates);
+
+        if ($move_is_promotion && is_null($move_dto->promotion_to_piece_name)) {
             throw ValidationException::withMessages([
                 'promotion_to_piece_name' => ['Pawn requires promotion']
             ]);
         }
 
-        $move_is_movement = $possible_moves->movement_coordinates_collection
-            ->whereCoordinates($coordinates->x, $coordinates->y)
-            ->exists();
-
-        if ($move_is_movement) {
-            $piece->coordinate_x = $coordinates->x;
-            $piece->coordinate_y = $coordinates->y;
-
-            $this->saveChessPiece($piece);
-
-            $this->saveMove($move);
-        }
-
-        $move_is_capture = $possible_moves->capture_coordinates_collection
-            ->whereCoordinates($coordinates->x, $coordinates->y)
-            ->exists();
-
-        if ($move_is_capture) {
-            $captured_piece = $game->pieces->whereCoordinates($coordinates->x, $coordinates->y)
-                ->firstOrFail();
-
-            $captured_piece->is_captured = true;
-            $this->saveChessPiece($captured_piece);
-
-            $game->pieces = $game->pieces->filter(function (ChessGamePiece $piece) use ($captured_piece) {
-                return $piece->id !== $captured_piece->id;
-            });
-
-            $piece->coordinate_x = $coordinates->x;
-            $piece->coordinate_y = $coordinates->y;
-
-            $this->saveChessPiece($piece);
-
-            $move->is_capture = true;
-            $this->saveMove($move);
-        }
-
-        $move_is_en_passant = $possible_moves->en_passant_coordinates_collection
-            ->whereCoordinates($coordinates->x, $coordinates->y)
-            ->exists();
-
-        if ($move_is_en_passant) {
-            /** @var PawnMoveCalculator $move_calculator */
-            $move_calculator = app(PawnMoveCalculator::class);
-            $y_modifier = $move_calculator->getYCoordinateModifierForPawn($piece);
-
-            $captured_piece = $game->pieces
-                ->whereCoordinates($coordinates->x, $coordinates->y - $y_modifier)
-                ->firstOrFail();
-
-            $captured_piece->is_captured = true;
-            $this->saveChessPiece($captured_piece);
-
-            $piece->coordinate_x = $coordinates->x;
-            $piece->coordinate_y = $coordinates->y;
-
-            $this->saveChessPiece($piece);
-
-            $move->is_capture = true;
-            $move->is_en_passant = true;
-
-            $this->saveMove($move);
-        }
-
         if ($move_is_promotion) {
-            $piece->name = $promotion_to_piece_name;
-
-            $this->saveChessPiece($piece);
-
-            $promotion_move = new ChessGamePieceMovePromotion();
-
-            $promotion_move->move_id = $move->id;
-            $promotion_move->to_name = $promotion_to_piece_name;
-
-            $this->saveMove($move);
-
-            $this->savePromotionMove($promotion_move);
+            return $this->performPromotion($move_dto);
         }
 
-        if ($this->isCurrentMoveCheck($game)) {
-            $move->is_check = true;
-            $this->saveMove($move);
-        }
-
-        $game->moves->add($move);
-
-        if (!($move_is_movement || $move_is_capture || $move_is_en_passant)) {
-            throw ValidationException::withMessages([
-                'coordinates' => ['Move is not allowed'],
-            ]);
-        }
+        throw ValidationException::withMessages([
+            'coordinates' => ['Move is not allowed'],
+        ]);
     }
 
-    private function isCurrentMoveCheck(ChessGame $game): bool
+    private function performMovement(ChessMoveDataDTO $move_dto): ChessGamePieceMove
     {
-        $prev_move_color = $game->getNextMoveChessPieceColor();
+        $move_dto->piece->coordinate_x = $move_dto->move_coordinates->x;
+        $move_dto->piece->coordinate_y = $move_dto->move_coordinates->y;
 
-        foreach ($game->pieces->whereColor($prev_move_color)->all() as $piece) {
-            $moves = $this->chess_piece_move_calculator_factory->make($piece)
-                ->calculateMovesForPieceInGame($piece, $game);
+        $this->saveChessPiece($move_dto->piece);
 
-            if ($this->movesForGameHaveKingCapture($moves, $game)) {
-                return true;
-            }
-        }
+        $move = $this->getChessGamePieceMove($move_dto);
 
-        return false;
+        $this->saveMove($move);
+
+        return $move;
     }
 
-    public function movesForGameHaveKingCapture(ChessPieceMoves $moves, ChessGame $game): bool
+    private function performCapture(ChessMoveDataDTO $move_dto): ChessGamePieceMove
     {
-        foreach ($moves->capture_coordinates_collection as $coordinates) {
-            $piece_on_coordinates = $game->pieces->whereCoordinates($coordinates->x, $coordinates->y)->first();
+        $captured_piece = $move_dto->game->pieces
+            ->whereCoordinates($move_dto->move_coordinates->x, $move_dto->move_coordinates->y)
+            ->firstOrFail();
 
-            if ($piece_on_coordinates?->name === ChessPieceNameDictionary::KING) {
-                return true;
-            }
-        }
+        $captured_piece->is_captured = true;
 
-        return false;
+        $this->saveChessPiece($captured_piece);
+
+        $move_dto->game->pieces = $move_dto->game->pieces->filter(function (ChessGamePiece $piece) use ($captured_piece) {
+            return $piece->id !== $captured_piece->id;
+        });
+
+        $move = $this->performMovement($move_dto);
+
+        $move->is_capture = true;
+
+        $this->saveMove($move);
+
+        return $move;
+    }
+
+    private function performEnPassant(ChessMoveDataDTO $move_dto): ChessGamePieceMove
+    {
+        $move_coordinates = $move_dto->move_coordinates;
+
+        $capture_coordinates = new Coordinates(
+            $move_dto->move_coordinates->x,
+            $move_dto->piece->coordinate_y,
+        );
+
+        $move_dto->move_coordinates = $capture_coordinates;
+
+        $move = $this->performCapture($move_dto);
+
+        $move_dto->piece->coordinate_x = $move_coordinates->x;
+        $move_dto->piece->coordinate_y = $move_coordinates->y;
+
+        $this->saveChessPiece($move_dto->piece);
+
+        $move->coordinate_x = $move_coordinates->x;
+        $move->coordinate_y = $move_coordinates->y;
+
+        $move->is_en_passant = true;
+
+        $this->saveMove($move);
+
+        return $move;
+    }
+
+    private function performPromotion(ChessMoveDataDTO $move_dto): ChessGamePieceMove
+    {
+        $move = $this->performMovement($move_dto);
+
+        $move_dto->piece->name = $move_dto->promotion_to_piece_name;
+
+        $this->saveChessPiece($move_dto->piece);
+
+        $promotion_move = new ChessGamePieceMovePromotion();
+
+        $promotion_move->move_id = $move->id;
+        $promotion_move->to_name = $move_dto->promotion_to_piece_name;
+
+        $this->savePromotionMove($promotion_move);
+
+        return $move;
+    }
+
+    private function getChessGamePieceMove(ChessMoveDataDTO $move_dto): ChessGamePieceMove
+    {
+        $move = new ChessGamePieceMove();
+
+        $move->chess_game_id = $move_dto->game->id;
+        $move->move_index = $move_dto->game->moves->getLastMoveIndex() + 1;
+        $move->chess_piece_name = $move_dto->piece->name;
+        $move->previous_coordinate_x = $move_dto->piece->coordinate_x;
+        $move->previous_coordinate_y = $move_dto->piece->coordinate_y;
+        $move->coordinate_x = $move_dto->move_coordinates->x;
+        $move->coordinate_y = $move_dto->move_coordinates->y;
+
+        return $move;
     }
 
     private function shouldBePromoted(ChessGamePiece $piece, Coordinates $new_coordinates): bool

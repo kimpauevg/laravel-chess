@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models\Collections;
 
+use App\DTO\Coordinates;
 use App\Models\ChessGamePiece;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @method ChessGamePiece|null first(callable $callback = null, $default = null)
  * @method ChessGamePiece firstOrFail($key = null, $operator = null, $value = null)
+ * @method ChessGamePiece[] all()
  */
 class ChessGamePieceCollection extends Collection
 {
@@ -21,6 +23,11 @@ class ChessGamePieceCollection extends Collection
     public function whereCoordinates(int $x, int $y): static
     {
         return $this->whereCoordinateX($x)->whereCoordinateY($y);
+    }
+
+    public function whereCoordinatesDTO(Coordinates $coordinates): static
+    {
+        return $this->whereCoordinates($coordinates->x, $coordinates->y);
     }
 
     public function whereCoordinateX(int $coordinate): static
