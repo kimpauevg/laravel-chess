@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property bool $is_en_passant
  * @property bool $is_check
  * @property bool $is_mate
+ * @property bool $is_draw
  */
 class ChessGamePieceMove extends Model
 {
@@ -37,10 +38,11 @@ class ChessGamePieceMove extends Model
         'previous_coordinate_y' => 'int',
         'coordinate_x'          => 'int',
         'coordinate_y'          => 'int',
-        'is_check'              => 'bool',
-        'is_mate'               => 'bool',
         'is_capture'            => 'bool',
         'is_en_passant'         => 'bool',
+        'is_check'              => 'bool',
+        'is_mate'               => 'bool',
+        'is_draw'               => 'bool',
     ];
 
     public function promotion(): HasOne

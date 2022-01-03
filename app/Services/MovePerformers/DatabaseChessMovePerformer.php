@@ -12,7 +12,6 @@ use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\Models\ChessGamePieceMove;
 use App\Models\ChessGamePieceMovePromotion;
-use App\Services\ChessGameService;
 use App\Services\ChessPieceMoveResolver;
 use App\Services\MoveCalculators\ChessPieceMoveCalculatorFactory;
 
@@ -39,6 +38,10 @@ class DatabaseChessMovePerformer extends AbstractChessPieceMovePerformer
 
         if ($next_player_cant_move && $move->is_check) {
             $move->is_mate = true;
+        }
+
+        if ($next_player_cant_move && !$move->is_draw) {
+            $move->is_draw = true;
         }
 
         $this->saveMove($move);
