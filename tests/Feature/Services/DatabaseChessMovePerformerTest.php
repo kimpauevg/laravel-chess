@@ -17,15 +17,15 @@ class DatabaseChessMovePerformerTest extends TestCase
     public function testPerformMate(): void
     {
         /**
-         *  h | K . . . . . . . |
-         *  g | . . R . . . . P |
-         *  f | . Q . . . . . . |
-         *  e | . . . . . . . . |
-         *  d | . . . . . . . . |
-         *  c | . . . . . . . . |
-         *  b | . . . . . . . . |
-         *  a | . . . . . . . . |
-         *      1 2 3 4 5 6 7 8
+         *  8 | K . . . . . . . |
+         *  7 | . . R . . . . P |
+         *  6 | . Q . . . . . . |
+         *  5 | . . . . . . . . |
+         *  4 | . . . . . . . . |
+         *  3 | . . . . . . . . |
+         *  2 | . . . . . . . . |
+         *  1 | . . . . . . . . |
+         *      a b c d e f g h
          */
 
         $game = ChessGameFactory::new()->id(1)
@@ -67,15 +67,15 @@ class DatabaseChessMovePerformerTest extends TestCase
     public function testPerformDraw(): void
     {
         /**
-         *  h | K . . . . . . . |
-         *  g | . . R . . . . . |
-         *  f | . . . . . . . . |
-         *  e | . Q . . . . . . |
-         *  d | . . . . . . . . |
-         *  c | . . . . . . . . |
-         *  b | . . . . . . . . |
-         *  a | . . . . . . . . |
-         *      1 2 3 4 5 6 7 8
+         *  8 | K . . . . . . . |
+         *  7 | . . R . . . . . |
+         *  6 | . . . . . . . . |
+         *  5 | . Q . . . . . . |
+         *  4 | . . . . . . . . |
+         *  3 | . . . . . . . . |
+         *  2 | . . . . . . . . |
+         *  1 | . . . . . . . . |
+         *      a b c d e f g h
          */
 
         $game = ChessGameFactory::new()->id(1)
@@ -112,15 +112,15 @@ class DatabaseChessMovePerformerTest extends TestCase
     public function testPerformCheck(): void
     {
         /**
-         *  h | K . . . . . . . |
-         *  g | . . R . . . . . |
-         *  f | . . . . . . . . |
-         *  e | . . . . . . . . |
-         *  d | . . . . . . . . |
-         *  c | . . . . . . . . |
-         *  b | . . . . . . . . |
-         *  a | . . . . . . . . |
-         *      1 2 3 4 5 6 7 8
+         *  8 | K . . . . . . . |
+         *  7 | . . R . . . . . |
+         *  6 | . . . . . . . . |
+         *  5 | . . . . . . . . |
+         *  4 | . . . . . . . . |
+         *  3 | . . . . . . . . |
+         *  2 | . . . . . . . . |
+         *  1 | . . . . . . . . |
+         *      a b c d e f g h
          */
 
         $game = ChessGameFactory::new()->id(1)

@@ -7,7 +7,11 @@ namespace Database\Factories;
 use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;
 use App\Dictionaries\ChessPieceCoordinates\ChessPieceCoordinateDictionary;
 use App\Models\ChessGamePieceMove;
+use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method ChessGamePieceMove make($attributes = [], ?Model $parent = null)
+ */
 class ChessGamePieceMoveFactory extends AbstractFactory
 {
     protected $model = ChessGamePieceMove::class;
@@ -24,7 +28,6 @@ class ChessGamePieceMoveFactory extends AbstractFactory
             'coordinate_y'          => $this->faker->numberBetween(...$y_coordinates_between),
             'chess_piece_name'      => ChessPieceNameDictionary::QUEEN,
             'move_index'            => 1,
-            'is_check'              => true,
         ];
     }
 
@@ -46,6 +49,21 @@ class ChessGamePieceMoveFactory extends AbstractFactory
     public function check(): static
     {
         return $this->state(['is_check' => true]);
+    }
+
+    public function capture(): static
+    {
+        return $this->state(['is_capture' => true]);
+    }
+
+    public function mate(): static
+    {
+        return $this->check()->state(['is_mate' => true]);
+    }
+
+    public function draw(): static
+    {
+        return $this->state(['is_draw' => true]);
     }
 
     public function name(string $name): static

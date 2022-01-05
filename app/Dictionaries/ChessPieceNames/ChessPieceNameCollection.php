@@ -25,4 +25,9 @@ class ChessPieceNameCollection extends Collection
     {
         return $this->pluck('name')->toArray();
     }
+
+    public function getByName(string $name): ChessPieceNameEntity
+    {
+        return $this->where('name', $name)->firstOrFail();
+    }
 }

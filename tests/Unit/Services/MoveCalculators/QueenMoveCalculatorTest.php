@@ -17,15 +17,15 @@ class QueenMoveCalculatorTest extends AbstractChessPieceMoveCalculatorTest
         $collection = $this->getMovesOnEmptyTableForPiece($piece);
 
         /**
-         *  h | . . . + . . . + |
-         *  g | + . . + . . + . |
-         *  f | . + . + . + . . |
-         *  e | . . + + + . . . |
-         *  d | + + + Q + + + + |
-         *  c | . . + + + . . . |
-         *  b | . + . + . + . . |
-         *  a | + . . + . . + . |
-         *      1 2 3 4 5 6 7 8
+         *  8 | . . . + . . . + |
+         *  7 | + . . + . . + . |
+         *  6 | . + . + . + . . |
+         *  5 | . . + + + . . . |
+         *  4 | + + + Q + + + + |
+         *  3 | . . + + + . . . |
+         *  2 | . + . + . + . . |
+         *  1 | + . . + . . + . |
+         *      a b c d e f g h
          */
 
         $expected_coordinates = [

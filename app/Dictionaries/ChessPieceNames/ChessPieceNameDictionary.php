@@ -18,12 +18,12 @@ class ChessPieceNameDictionary
     public function all(): ChessPieceNameCollection
     {
         $pieces = [
-            ['name' => self::PAWN, 'title' => 'Pawn'],
-            ['name' => self::BISHOP, 'title' => 'Bishop'],
-            ['name' => self::KNIGHT, 'title' => 'Knight'],
-            ['name' => self::ROOK, 'title' => 'Rook'],
-            ['name' => self::QUEEN, 'title' => 'Queen'],
-            ['name' => self::KING, 'title' => 'King'],
+            ['name' => self::PAWN, 'title' => 'Pawn', 'symbol' => ''],
+            ['name' => self::BISHOP, 'title' => 'Bishop', 'symbol' => 'B'],
+            ['name' => self::KNIGHT, 'title' => 'Knight', 'symbol' => 'N'],
+            ['name' => self::ROOK, 'title' => 'Rook', 'symbol' => 'R'],
+            ['name' => self::QUEEN, 'title' => 'Queen', 'symbol' => 'Q'],
+            ['name' => self::KING, 'title' => 'King', 'symbol' => 'K'],
         ];
 
         return new ChessPieceNameCollection(collect($pieces)->mapInto(ChessPieceNameEntity::class));

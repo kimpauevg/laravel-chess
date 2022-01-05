@@ -10,6 +10,10 @@ body {
     padding: 20px;
 }
 
+.content {
+    padding: 1em;
+}
+
 .pt-400px {
     padding-top: 400px;
 }
@@ -26,7 +30,65 @@ body {
     padding: 1em;
 }
 
+a {
+    color: #c6cdcf
+}
 a:hover {
     color: #ffdc7f;
     text-decoration: underline;
+}
+
+.chess-board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    width: 360px;
+}
+.board-square {
+    width: 45px;
+    height: 45px;
+}
+
+.move-history {
+    height: 360px;
+    overflow: auto;
+}
+
+.background-dark {
+    background: #6E6E6E;
+}
+.background-light {
+    background: #bee5eb;
+}
+
+.board-square-selected.background-dark {
+    background: #c69500;
+}
+.board-square-selected.background-light {
+    background: #d6a510;
+}
+
+.board-square-move.background-dark {
+    background: #1e7e34;
+}
+.board-square-move.background-light {
+    background: #2e8e44;
+}
+
+.board-square-capture.background-dark {
+    background: #990000;
+}
+.board-square-capture.background-light {
+    background: #ce2029;
+}
+
+.board-square-castling.background-dark {
+    background: #006dcf;
+}
+
+.board-square-castling.background-light {
+    background: #005cbf;
+}
+
+.modal-content-dark {
+    background: #2a2a2a;
 }

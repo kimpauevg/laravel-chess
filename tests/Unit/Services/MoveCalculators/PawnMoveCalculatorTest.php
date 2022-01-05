@@ -21,15 +21,15 @@ class PawnMoveCalculatorTest extends AbstractChessPieceMoveCalculatorTest
         $collection = $this->getMovesOnEmptyTableForPiece($piece);
 
         /**
-         *  h | . . . . . . . . |
-         *  g | . . . . . . . . |
-         *  f | . . . . . . . . |
-         *  e | . . . . . . . . |
-         *  d | . . . + . . . . |
-         *  c | . . . + . . . . |
-         *  b | . . . P . . . . |
-         *  a | . . . . . . . . |
-         *      1 2 3 4 5 6 7 8
+         *  8 | . . . . . . . . |
+         *  7 | . . . . . . . . |
+         *  6 | . . . . . . . . |
+         *  5 | . . . . . . . . |
+         *  4 | . . . + . . . . |
+         *  3 | . . . + . . . . |
+         *  2 | . . . P . . . . |
+         *  1 | . . . . . . . . |
+         *      a b c d e f g h
          */
         $expected_coordinates = [
             [4, 3],
@@ -46,15 +46,15 @@ class PawnMoveCalculatorTest extends AbstractChessPieceMoveCalculatorTest
         $collection = $this->getMovesOnEmptyTableForPiece($piece);
 
         /**
-         *  h | . . . . . . . . |
-         *  g | . . . . . . . . |
-         *  f | . . . . . . . . |
-         *  e | . . . . . . . . |
-         *  d | . . . + . . . . |
-         *  c | . . . P . . . . |
-         *  b | . . . . . . . . |
-         *  a | . . . . . . . . |
-         *      1 2 3 4 5 6 7 8
+         *  8 | . . . . . . . . |
+         *  7 | . . . . . . . . |
+         *  6 | . . . . . . . . |
+         *  5 | . . . . . . . . |
+         *  4 | . . . + . . . . |
+         *  3 | . . . P . . . . |
+         *  2 | . . . . . . . . |
+         *  1 | . . . . . . . . |
+         *      a b c d e f g h
          */
         $expected_coordinates = [
             [4, 4],
@@ -70,15 +70,15 @@ class PawnMoveCalculatorTest extends AbstractChessPieceMoveCalculatorTest
         $collection = $this->getMovesOnEmptyTableForPiece($piece);
 
         /**
-         *  h | . . . . . . . . |
-         *  g | . . . P . . . . |
-         *  f | . . . + . . . . |
-         *  e | . . . + . . . . |
-         *  d | . . . . . . . . |
-         *  c | . . . . . . . . |
-         *  b | . . . . . . . . |
-         *  a | . . . . . . . . |
-         *      1 2 3 4 5 6 7 8
+         *  8 | . . . . . . . . |
+         *  7 | . . . P . . . . |
+         *  6 | . . . + . . . . |
+         *  5 | . . . + . . . . |
+         *  4 | . . . . . . . . |
+         *  3 | . . . . . . . . |
+         *  2 | . . . . . . . . |
+         *  1 | . . . . . . . . |
+         *      a b c d e f g h
          */
         $expected_coordinates = [
             [4, 6],
@@ -95,15 +95,15 @@ class PawnMoveCalculatorTest extends AbstractChessPieceMoveCalculatorTest
         $collection = $this->getMovesOnEmptyTableForPiece($piece);
 
         /**
-         *  h | . . . . . . . . |
-         *  g | . . . . . . . . |
-         *  f | . . . P . . . . |
-         *  e | . . . + . . . . |
-         *  d | . . . . . . . . |
-         *  c | . . . . . . . . |
-         *  b | . . . . . . . . |
-         *  a | . . . . . . . . |
-         *      1 2 3 4 5 6 7 8
+         *  8 | . . . . . . . . |
+         *  7 | . . . . . . . . |
+         *  6 | . . . P . . . . |
+         *  5 | . . . + . . . . |
+         *  4 | . . . . . . . . |
+         *  3 | . . . . . . . . |
+         *  2 | . . . . . . . . |
+         *  1 | . . . . . . . . |
+         *      a b c d e f g h
          */
         $expected_coordinates = [
             [4, 5],
@@ -135,15 +135,15 @@ class PawnMoveCalculatorTest extends AbstractChessPieceMoveCalculatorTest
     public function testBlockedByAnotherFigure(): void
     {
         /**
-         *  h | . . . . . . . . |
-         *  g | . . . . . . . . |
-         *  f | . . . . . . . . |
-         *  e | . . . . . . . . |
-         *  d | . . . . . . . . |
-         *  c | . . . P . . . . |
-         *  b | . . . P . . . . |
-         *  a | . . . . . . . . |
-         *      1 2 3 4 5 6 7 8
+         *  8 | . . . . . . . . |
+         *  7 | . . . . . . . . |
+         *  6 | . . . . . . . . |
+         *  5 | . . . . . . . . |
+         *  4 | . . . . . . . . |
+         *  3 | . . . P . . . . |
+         *  2 | . . . P . . . . |
+         *  1 | . . . . . . . . |
+         *      a b c d e f g h
          */
 
         $pawn_to_test = ChessGamePieceFactory::new()
@@ -169,15 +169,15 @@ class PawnMoveCalculatorTest extends AbstractChessPieceMoveCalculatorTest
     public function testTwoSquareMoveBlockedByAnotherFigure(): void
     {
         /**
-         *  h | . . . . . . . . |
-         *  g | . . . . . . . . |
-         *  f | . . . . . . . . |
-         *  e | . . . . . . . . |
-         *  d | . . . P . . . . |
-         *  c | . . . * . . . . |
-         *  b | . . . P . . . . |
-         *  a | . . . . . . . . |
-         *      1 2 3 4 5 6 7 8
+         *  8 | . . . . . . . . |
+         *  7 | . . . . . . . . |
+         *  6 | . . . . . . . . |
+         *  5 | . . . . . . . . |
+         *  4 | . . . P . . . . |
+         *  3 | . . . * . . . . |
+         *  2 | . . . P . . . . |
+         *  1 | . . . . . . . . |
+         *      a b c d e f g h
          */
 
         $pawn_to_test = ChessGamePieceFactory::new()
@@ -205,15 +205,15 @@ class PawnMoveCalculatorTest extends AbstractChessPieceMoveCalculatorTest
     public function testEnPassant(): void
     {
         /**
-         *  h | . . . . . . . . |
-         *  g | . . . . . . . . |
-         *  f | . . . . * . . . |
-         *  e | . . . P P . . . |
-         *  d | . . . . . . . . |
-         *  c | . . . . . . . . |
-         *  b | . . . . . . . . |
-         *  a | . . . . . . . . |
-         *      1 2 3 4 5 6 7 8
+         *  8 | . . . . . . . . |
+         *  7 | . . . . . . . . |
+         *  6 | . . . . * . . . |
+         *  5 | . . . P P . . . |
+         *  4 | . . . . . . . . |
+         *  3 | . . . . . . . . |
+         *  2 | . . . . . . . . |
+         *  1 | . . . . . . . . |
+         *      a b c d e f g h
          */
 
         $pawn_to_test = ChessGamePieceFactory::new()

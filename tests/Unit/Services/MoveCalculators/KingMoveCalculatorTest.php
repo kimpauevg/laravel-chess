@@ -21,15 +21,15 @@ class KingMoveCalculatorTest extends AbstractChessPieceMoveCalculatorTest
         $moves = $this->getMovesOnEmptyTableForPiece($piece);
 
         /**
-         *  h | . . . . . . . . |
-         *  g | . . . . . . . . |
-         *  f | . . . . . . . . |
-         *  e | . . . . . . . . |
-         *  d | . . . . . . . . |
-         *  c | . . + + + . . . |
-         *  b | . . + K + . . . |
-         *  a | . . + + + . . . |
-         *      1 2 3 4 5 6 7 8
+         *  8 | . . . . . . . . |
+         *  7 | . . . . . . . . |
+         *  6 | . . . . . . . . |
+         *  5 | . . . . . . . . |
+         *  4 | . . . . . . . . |
+         *  3 | . . + + + . . . |
+         *  2 | . . + K + . . . |
+         *  1 | . . + + + . . . |
+         *      a b c d e f g h
          */
         $expected_coordinates = [
             [4, 3],
@@ -55,15 +55,15 @@ class KingMoveCalculatorTest extends AbstractChessPieceMoveCalculatorTest
         $moves = $this->getMovesOnEmptyTableForPiece($piece);
 
         /**
-         *  h | . . . . . . . . |
-         *  g | . . . . . . . . |
-         *  f | . . . . . . . . |
-         *  e | . . . . . . . . |
-         *  d | . . . . . . . . |
-         *  c | . . . . . . . . |
-         *  b | + + . . . . . . |
-         *  a | K + . . . . . . |
-         *      1 2 3 4 5 6 7 8
+         *  8 | . . . . . . . . |
+         *  7 | . . . . . . . . |
+         *  6 | . . . . . . . . |
+         *  5 | . . . . . . . . |
+         *  4 | . . . . . . . . |
+         *  3 | . . . . . . . . |
+         *  2 | + + . . . . . . |
+         *  1 | K + . . . . . . |
+         *      a b c d e f g h
          */
 
         $expected_coordinates = [
@@ -75,7 +75,7 @@ class KingMoveCalculatorTest extends AbstractChessPieceMoveCalculatorTest
         $this->assertMovesMovementCollectionEquals($expected_coordinates, $moves);
     }
 
-    public function testLeftCastling(): void
+    public function testQueensideCastling(): void
     {
         $light_king = $this->makeLightKingWithCoordinates(5, 1);
 
@@ -98,7 +98,7 @@ class KingMoveCalculatorTest extends AbstractChessPieceMoveCalculatorTest
         $this->assertEquals(1, $castling->y);
     }
 
-    public function testRightCastling(): void
+    public function testKingsideCastling(): void
     {
         $light_king = $this->makeLightKingWithCoordinates(5, 1);
 

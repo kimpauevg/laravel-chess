@@ -1,67 +1,28 @@
-@php
-$pieces = collect(Arr::get($chess_game, 'pieces', []));
-@endphp
 @extends('layouts.main')
 @section('body')
-    <style>
-        .chess-board {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            grid-auto-rows: 1fr
-        }
-        .board-square {
-            width: auto;
-            height: 45px;
-        }
+    <div class="row justify-content-center">
+        <div class="col-auto my-auto">
+            <h4 class="mb-0">{{ Arr::get($chess_game, 'name') }}</h4>
+        </div>
+        <div class="col-auto">
+            <a href="{{ route('chess-games.index') }}" class="btn btn-dark">
+                <i class="fa fa-arrow-left"></i>
+                To Menu
+            </a>
+        </div>
 
-        .background-dark {
-            background: #6E6E6E;
-        }
-        .background-light {
-            background: #bee5eb;
-        }
-
-        .board-square-selected.background-dark {
-            background: #c69500;
-        }
-        .board-square-selected.background-light {
-            background: #d6a510;
-        }
-
-        .board-square-move.background-dark {
-            background: #1e7e34;
-        }
-        .board-square-move.background-light {
-            background: #2e8e44;
-        }
-
-        .board-square-capture.background-dark {
-            background: #990000;
-        }
-        .board-square-capture.background-light {
-            background: #ce2029;
-        }
-
-        .board-square-castling.background-dark {
-            background: #006dcf;
-        }
-
-        .board-square-castling.background-light {
-            background: #005cbf;
-        }
-
-        .modal-content-dark {
-            background: #2a2a2a;
-        }
-    </style>
-    <div class="col-lg-8 mx-auto mt-2">
-        <div class="container-center">
-            <div class="chess-board">
+    </div>
+    <div class="row mt-2 mx-auto justify-content-center">
+        <div class="col-auto">
+            <div class="chess-board float-right">
+                @php
+                    $pieces = collect(Arr::get($chess_game, 'pieces', []));
+                @endphp
                 @for($vertical_coordinate = 8; $vertical_coordinate > 0; $vertical_coordinate--)
                     @for($horizontal_coordinate = 1; $horizontal_coordinate <= 8; $horizontal_coordinate++)
                         @php
-                        $background = ($vertical_coordinate + $horizontal_coordinate) % 2 === 0 ? 'background-dark' : 'background-light';
-                        $chess_piece = $pieces->where('coordinates.x', $horizontal_coordinate)->where('coordinates.y', $vertical_coordinate)->first();
+                            $background = ($vertical_coordinate + $horizontal_coordinate) % 2 === 0 ? 'background-dark' : 'background-light';
+                            $chess_piece = $pieces->where('coordinates.x', $horizontal_coordinate)->where('coordinates.y', $vertical_coordinate)->first();
                         @endphp
                         <div class="board-square {{ $background }}"
                              data-coordinate-x="{{ $horizontal_coordinate }}"
@@ -70,14 +31,26 @@ $pieces = collect(Arr::get($chess_game, 'pieces', []));
                              data-chess-piece-id="{{ Arr::get($chess_piece, 'id') }}"
                              data-chess-piece-color="{{ Arr::get($chess_piece, 'color') }}"
                              data-chess-piece-name="{{Arr::get($chess_piece, 'name')}}"
-                             @endif
+                            @endif
                         >
                         </div>
                     @endfor
                 @endfor
             </div>
         </div>
+        <div class="col-lg-3 move-history">
+            <h5>Move history:</h5>
+            <div class="moves">
+                @foreach(Arr::get($chess_game, 'moves') as $move)
+                    <div class="w-auto">
+                        {{ $move }}
+                    </div>
+                @endforeach
+
+            </div>
+        </div>
     </div>
+
     <div class="modal fade" id="select-promotion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content modal-content-dark">
