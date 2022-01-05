@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Services\MovePerformers;
 
 use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;
-use App\DTO\ChessMoveDataDTO;
+use App\DTO\ChessPieceMoveData;
 use App\DTO\ChessPieceMoves;
 use App\DTO\Collections\CoordinatesCollection;
 use App\Models\ChessGame;
@@ -24,23 +24,23 @@ class DatabaseChessMovePerformer extends AbstractChessPieceMovePerformer
         parent::__construct($chess_piece_move_calculator_factory);
     }
 
-    public function performMove(ChessMoveDataDTO $move_dto): void
+    public function performMove(ChessPieceMoveData $move_data): void
     {
-        parent::performMove($move_dto);
+        parent::performMove($move_data);
 
-        $move = $move_dto->game->moves->last();
+        $move = $move_data->game->moves->last();
 
-        if ($this->isCurrentMoveCheck($move_dto->game)) {
+        if ($this->isCurrentMoveCheck($move_data->game)) {
             $move->is_check = true;
         }
 
-        $next_player_cant_move = !$this->doesNextPlayerHaveMoves($move_dto->game);
+        $next_player_cant_move = !$this->doesNextPlayerHaveMoves($move_data->game);
 
         if ($next_player_cant_move && $move->is_check) {
             $move->is_mate = true;
         }
 
-        if ($next_player_cant_move && !$move->is_draw) {
+        if ($next_player_cant_move && !$move->is_check) {
             $move->is_draw = true;
         }
 
@@ -74,8 +74,7 @@ class DatabaseChessMovePerformer extends AbstractChessPieceMovePerformer
             $moves_preventing_check_count = $moves_preventing_check->capture_coordinates_collection->count()
                 + $moves_preventing_check->movement_coordinates_collection->count()
                 + $moves_preventing_check->castling_coordinates_collection->count()
-                + $moves_preventing_check->en_passant_coordinates_collection->count()
-                + $moves_preventing_check->promotion_coordinates_collection->count();
+                + $moves_preventing_check->en_passant_coordinates_collection->count();
 
             if ($moves_preventing_check_count > 0) {
                 return true;

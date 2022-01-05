@@ -6,14 +6,13 @@ namespace App\Models\Collections;
 
 use App\DTO\Coordinates;
 use App\Models\ChessGamePiece;
-use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @method ChessGamePiece|null first(callable $callback = null, $default = null)
  * @method ChessGamePiece firstOrFail($key = null, $operator = null, $value = null)
  * @method ChessGamePiece[] all()
  */
-class ChessGamePieceCollection extends Collection
+class ChessGamePieceCollection extends AbstractCollection
 {
     public function findOrFail(int $id): ChessGamePiece
     {
@@ -33,6 +32,12 @@ class ChessGamePieceCollection extends Collection
     public function whereCoordinateX(int $coordinate): static
     {
         return $this->where('coordinate_x', $coordinate);
+    }
+
+    public function whereCoordinateXBetween(int $from, int $to): static
+    {
+        return $this->where('coordinate_x', '>', $from)
+            ->where('coordinate_x', '<', $to);
     }
 
     public function whereCoordinateY(int $coordinate): static

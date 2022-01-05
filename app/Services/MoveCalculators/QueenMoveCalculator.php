@@ -21,7 +21,12 @@ class QueenMoveCalculator extends AbstractChessPieceMoveCalculator
         $rook_moves = $this->rook_move_calculator->calculateMovesForPieceInGame($piece, $game);
 
         $bishop_moves = $this->bishop_move_calculator->calculateMovesForPieceInGame($piece, $game);
-        $queen_moves = $rook_moves->merge($bishop_moves);
+
+        $queen_moves = new ChessPieceMoves();
+        $queen_moves->movement_coordinates_collection = $rook_moves->movement_coordinates_collection
+            ->merge($bishop_moves->movement_coordinates_collection);
+        $queen_moves->capture_coordinates_collection = $rook_moves->capture_coordinates_collection
+            ->merge($bishop_moves->capture_coordinates_collection);
 
         return $queen_moves;
     }

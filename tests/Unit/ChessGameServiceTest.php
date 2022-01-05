@@ -6,8 +6,6 @@ namespace Tests\Unit;
 
 use App\Models\Builders\ChessGameBuilder;
 use App\Models\ChessGame;
-use App\Models\Collections\ChessGamePieceCollection;
-use App\Models\Collections\ChessGamePieceMoveCollection;
 use App\Services\ChessGameService;
 use Database\Factories\ChessGamePieceFactory;
 use Database\Factories\ChessGamePieceMoveFactory;
@@ -38,7 +36,7 @@ class ChessGameServiceTest extends TestCase
             ->coordinates(3, 7)
             ->make();
 
-        $game->pieces = new ChessGamePieceCollection([$dark_king, $dark_knight, $light_knight]);
+        $game->pieces->add($dark_king)->add($dark_knight)->add($light_knight);
 
         $prev_move = ChessGamePieceMoveFactory::new()
             ->knight()
@@ -47,7 +45,7 @@ class ChessGameServiceTest extends TestCase
             ->moveIndex(1)
             ->make();
 
-        $game->moves = new ChessGamePieceMoveCollection([$prev_move]);
+        $game->moves->add($prev_move);
 
         $this->mock(ChessGameBuilder::class, function (MockInterface $mock) use ($game) {
             $mock->shouldReceive('findOrFail')->andReturn($game);

@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property bool $is_check
  * @property bool $is_mate
  * @property bool $is_draw
+ *
+ * @property ChessGamePieceMovePromotion|null $promotion
  */
 class ChessGamePieceMove extends Model
 {

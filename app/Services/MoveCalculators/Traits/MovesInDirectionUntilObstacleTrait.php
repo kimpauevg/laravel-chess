@@ -23,7 +23,11 @@ trait MovesInDirectionUntilObstacleTrait
         /** @var CoordinateModifiers $coordinate_modifiers */
         foreach ($this->getCoordinateModifiers() as $coordinate_modifiers) {
             $new_moves = $this->findPieceMovesInDirectionUsingModifiers($piece, $coordinate_modifiers);
-            $moves = $moves->merge($new_moves);
+
+            $moves->movement_coordinates_collection = $moves->movement_coordinates_collection
+                ->merge($new_moves->movement_coordinates_collection);
+            $moves->capture_coordinates_collection = $moves->capture_coordinates_collection
+                ->merge($new_moves->capture_coordinates_collection);
         }
 
         return $moves;

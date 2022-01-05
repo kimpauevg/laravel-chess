@@ -142,10 +142,6 @@ class PawnMoveCalculator extends AbstractChessPieceMoveCalculator
 
     private function canMoveToCoordinate(Coordinates $coordinates): bool
     {
-        if ($this->isCoordinateInvalid($coordinates)) {
-            return false;
-        }
-
         if ($this->isGridWithCoordinatesTaken($coordinates)) {
             return false;
         }

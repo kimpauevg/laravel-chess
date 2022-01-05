@@ -7,7 +7,7 @@ namespace App\DTO;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 
-class ChessMoveDataDTO
+class ChessPieceMoveData
 {
     public ?string $promotion_to_piece_name = null;
 

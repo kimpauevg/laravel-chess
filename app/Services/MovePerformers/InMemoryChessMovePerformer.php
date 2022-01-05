@@ -8,7 +8,7 @@ use App\Models\ChessGamePiece;
 use App\Models\ChessGamePieceMove;
 use App\Models\ChessGamePieceMovePromotion;
 
-class DBLessChessMovePerformer extends AbstractChessPieceMovePerformer
+class InMemoryChessMovePerformer extends AbstractChessPieceMovePerformer
 {
     protected function saveMove(ChessGamePieceMove $move): void
     {

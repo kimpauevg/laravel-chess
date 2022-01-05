@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Services\ChessPieceMoveCalculators;
+namespace Tests\Unit\Services\MoveCalculators;
 
 use App\DTO\ChessPieceMoves;
 use App\Models\ChessGame;
@@ -40,9 +40,11 @@ abstract class AbstractChessPieceMoveCalculatorTest extends TestCase
 
         $game->setRelation('pieces', new ChessGamePieceCollection([$piece]));
 
-        /** @var ChessPieceMoveCalculatorFactory $factory */
-        $factory = $this->app->make(ChessPieceMoveCalculatorFactory::class);
+        return $this->getMoveCalculatorFactory()->make($piece)->calculateMovesForPieceInGame($piece, $game);
+    }
 
-        return $factory->make($piece)->calculateMovesForPieceInGame($piece, $game);
+    protected function getMoveCalculatorFactory(): ChessPieceMoveCalculatorFactory
+    {
+        return $this->app->make(ChessPieceMoveCalculatorFactory::class);
     }
 }

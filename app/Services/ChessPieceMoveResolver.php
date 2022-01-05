@@ -5,20 +5,20 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;
-use App\DTO\ChessMoveDataDTO;
+use App\DTO\ChessPieceMoveData;
 use App\DTO\ChessPieceMoves;
 use App\DTO\Collections\CoordinatesCollection;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
 use App\Services\MoveCalculators\ChessPieceMoveCalculatorFactory;
-use App\Services\MovePerformers\DBLessChessMovePerformer;
+use App\Services\MovePerformers\InMemoryChessMovePerformer;
 
 class ChessPieceMoveResolver
 {
     public function __construct(
         private ChessPieceMoveCalculatorFactory $move_calculator_factory,
-        private DBLessChessMovePerformer $dbless_chess_move_performer,
-        private ChessGameService $chess_game_service,
+        private InMemoryChessMovePerformer      $move_performer,
+        private ChessGameService                $chess_game_service,
     ) {
     }
 
@@ -41,9 +41,6 @@ class ChessPieceMoveResolver
 
         $moves->capture_coordinates_collection = $this
             ->filterCoordinatesCollectionNotPreventingCheck($moves->capture_coordinates_collection, $piece, $game);
-
-        $moves->promotion_coordinates_collection = $this
-            ->filterCoordinatesCollectionNotPreventingCheck($moves->promotion_coordinates_collection, $piece, $game);
 
         $moves->en_passant_coordinates_collection = $this
             ->filterCoordinatesCollectionNotPreventingCheck($moves->en_passant_coordinates_collection, $piece, $game);
@@ -77,10 +74,10 @@ class ChessPieceMoveResolver
 
             $piece_clone = $game_clone->pieces->findOrFail($piece->id);
 
-            $move_dto = new ChessMoveDataDTO($game_clone, $piece_clone, $move_coordinates);
-            $move_dto->promotion_to_piece_name = ChessPieceNameDictionary::QUEEN;
+            $move_data = new ChessPieceMoveData($game_clone, $piece_clone, $move_coordinates);
+            $move_data->promotion_to_piece_name = ChessPieceNameDictionary::QUEEN;
 
-            $this->dbless_chess_move_performer->performMove($move_dto);
+            $this->move_performer->performMove($move_data);
 
             if (!$this->canColoredPiecesCaptureKingInGame($player_made_check_color, $game_clone)) {
                 $valid_movements[] = $move_coordinates;

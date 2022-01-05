@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Services;
 
-use App\DTO\ChessMoveDataDTO;
+use App\DTO\ChessPieceMoveData;
 use App\DTO\Coordinates;
 use App\Models\ChessGamePieceMove;
 use App\Services\MovePerformers\DatabaseChessMovePerformer;
@@ -53,15 +53,104 @@ class DatabaseChessMovePerformerTest extends TestCase
 
         $light_queen = $game->pieces->findOrFail(2);
 
-        /** @var DatabaseChessMovePerformer $performer */
-        $performer = $this->app->make(DatabaseChessMovePerformer::class);
+        $move_data = new ChessPieceMoveData($game, $light_queen, new Coordinates(2, 7));
 
-        $move_dto = new ChessMoveDataDTO($game, $light_queen, new Coordinates(2, 7));
-
-        $performer->performMove($move_dto);
+        $this->getPerformer()->performMove($move_data);
 
         $this->assertDatabaseHas(ChessGamePieceMove::TABLE, [
-            'is_mate' => true,
+            'is_check' => true,
+            'is_mate'  => true,
+            'is_draw'  => false,
         ]);
+    }
+
+    public function testPerformDraw(): void
+    {
+        /**
+         *  h | K . . . . . . . |
+         *  g | . . R . . . . . |
+         *  f | . . . . . . . . |
+         *  e | . Q . . . . . . |
+         *  d | . . . . . . . . |
+         *  c | . . . . . . . . |
+         *  b | . . . . . . . . |
+         *  a | . . . . . . . . |
+         *      1 2 3 4 5 6 7 8
+         */
+
+        $game = ChessGameFactory::new()->id(1)
+            ->hasPieces(
+                ChessGamePieceFactory::new()->id(1)
+                    ->dark()->king()
+                    ->coordinates(1, 8)
+            )
+            ->hasPieces(
+                ChessGamePieceFactory::new()->id(2)
+                    ->light()->queen()
+                    ->coordinates(2, 5)
+            )
+            ->hasPieces(
+                ChessGamePieceFactory::new()->id(3)
+                    ->light()->rook()
+                    ->coordinates(3, 7)
+            )
+            ->create();
+
+        $light_queen = $game->pieces->findOrFail(2);
+
+        $move_data = new ChessPieceMoveData($game, $light_queen, new Coordinates(2, 6));
+
+        $this->getPerformer()->performMove($move_data);
+
+        $this->assertDatabaseHas(ChessGamePieceMove::TABLE, [
+            'is_check' => false,
+            'is_mate'  => false,
+            'is_draw'  => true,
+        ]);
+    }
+
+    public function testPerformCheck(): void
+    {
+        /**
+         *  h | K . . . . . . . |
+         *  g | . . R . . . . . |
+         *  f | . . . . . . . . |
+         *  e | . . . . . . . . |
+         *  d | . . . . . . . . |
+         *  c | . . . . . . . . |
+         *  b | . . . . . . . . |
+         *  a | . . . . . . . . |
+         *      1 2 3 4 5 6 7 8
+         */
+
+        $game = ChessGameFactory::new()->id(1)
+            ->hasPieces(
+                ChessGamePieceFactory::new()->id(1)
+                    ->dark()->king()
+                    ->coordinates(1, 8)
+            )
+            ->hasPieces(
+                ChessGamePieceFactory::new()->id(2)
+                    ->light()->rook()
+                    ->coordinates(3, 7)
+            )
+            ->create();
+
+        $rook = $game->pieces->findOrFail(2);
+
+        $move_data = new ChessPieceMoveData($game, $rook, new Coordinates(3, 8));
+
+        $this->getPerformer()->performMove($move_data);
+
+        $this->assertDatabaseHas(ChessGamePieceMove::TABLE, [
+            'is_check' => true,
+            'is_mate'  => false,
+            'is_draw'  => false,
+        ]);
+    }
+
+    private function getPerformer(): DatabaseChessMovePerformer
+    {
+        return $this->app->make(DatabaseChessMovePerformer::class);
     }
 }

@@ -7,7 +7,7 @@ namespace App\Services;
 use App\Dictionaries\ChessPieceColors\ChessPieceColorDictionary;
 use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;
 use App\Dictionaries\ChessPieceCoordinates\ChessPieceCoordinateDictionary;
-use App\DTO\ChessMoveDataDTO;
+use App\DTO\ChessPieceMoveData;
 use App\DTO\Collections\CoordinatesCollection;
 use App\Models\Builders\ChessGameBuilder;
 use App\Models\ChessGame;
@@ -26,7 +26,7 @@ class ChessGameService
 {
     public function getChessGames(): LengthAwarePaginator
     {
-        return $this->getBuilder()->orderBy('created_at')->paginate();
+        return $this->getBuilder()->with(['moves'])->orderBy('created_at')->paginate();
     }
 
     public function getGameById(int $id): ChessGame
@@ -100,10 +100,10 @@ class ChessGameService
         /** @var DatabaseChessMovePerformer $move_performer */
         $move_performer = app(DatabaseChessMovePerformer::class);
 
-        $move_dto = new ChessMoveDataDTO($game, $chess_piece, $move_coordinates);
-        $move_dto->promotion_to_piece_name = $promotion_to_piece_name;
+        $move_data = new ChessPieceMoveData($game, $chess_piece, $move_coordinates);
+        $move_data->promotion_to_piece_name = $promotion_to_piece_name;
 
-        $move_performer->performMove($move_dto);
+        $move_performer->performMove($move_data);
     }
 
     private function storeDefaultPiecesForGame(ChessGame $game): void
@@ -131,11 +131,9 @@ class ChessGameService
             8 => ChessPieceNameDictionary::ROOK,
         ];
 
-        for (
-            $coordinate_x = ChessPieceCoordinateDictionary::MIN_COORDINATE_X;
-            $coordinate_x <= ChessPieceCoordinateDictionary::MAX_COORDINATE_X;
-            $coordinate_x++
-        ) {
+        $coordinate_x = ChessPieceCoordinateDictionary::MIN_COORDINATE_X;
+
+        while ($coordinate_x <= ChessPieceCoordinateDictionary::MAX_COORDINATE_X) {
             $chess_piece = new ChessGamePiece();
             $chess_piece->coordinate_x = $coordinate_x;
             $chess_piece->name = Arr::get($pieces_by_coordinate_x, $coordinate_x);
@@ -162,6 +160,8 @@ class ChessGameService
             $dark_pawn->color = ChessPieceColorDictionary::DARK;
             $dark_pawn->coordinate_y = ChessPieceCoordinateDictionary::DARK_PAWN_STARTING_Y_COORDINATE;
             $chess_pieces[] = $dark_pawn;
+
+            $coordinate_x++;
         }
 
         return new ChessGamePieceCollection($chess_pieces);

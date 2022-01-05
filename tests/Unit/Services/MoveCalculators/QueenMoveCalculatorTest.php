@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Services\ChessPieceMoveCalculators;
+namespace Tests\Unit\Services\MoveCalculators;
 
 use App\Dictionaries\ChessPieceColors\ChessPieceColorDictionary;
 use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;

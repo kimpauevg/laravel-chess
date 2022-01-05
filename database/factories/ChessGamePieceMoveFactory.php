@@ -38,6 +38,11 @@ class ChessGamePieceMoveFactory extends AbstractFactory
         return $this->name(ChessPieceNameDictionary::KNIGHT);
     }
 
+    public function king(): static
+    {
+        return $this->name(ChessPieceNameDictionary::KING);
+    }
+
     public function check(): static
     {
         return $this->state(['is_check' => true]);

@@ -15,6 +15,7 @@ class CoordinateFormatter
             'movements'   => $this->coordinateCollectionToArray($moves->movement_coordinates_collection),
             'captures'    => $this->coordinateCollectionToArray($moves->capture_coordinates_collection),
             'en_passants' => $this->coordinateCollectionToArray($moves->en_passant_coordinates_collection),
+            'castlings'   => $this->coordinateCollectionToArray($moves->castling_coordinates_collection),
         ];
     }
 

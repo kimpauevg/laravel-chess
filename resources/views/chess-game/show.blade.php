@@ -42,6 +42,14 @@ $pieces = collect(Arr::get($chess_game, 'pieces', []));
             background: #ce2029;
         }
 
+        .board-square-castling.background-dark {
+            background: #006dcf;
+        }
+
+        .board-square-castling.background-light {
+            background: #005cbf;
+        }
+
         .modal-content-dark {
             background: #2a2a2a;
         }
@@ -111,13 +119,17 @@ $pieces = collect(Arr::get($chess_game, 'pieces', []));
                 $('.chess-board .board-square')
                     .removeClass('board-square-selected')
                     .removeClass('board-square-move')
-                    .removeClass('board-square-capture');
-
+                    .removeClass('board-square-capture')
+                    .removeClass('board-square-castling')
+                ;
 
                 return;
             }
 
-            if (current_square.hasClass('board-square-move') || current_square.hasClass('board-square-capture')) {
+            if (current_square.hasClass('board-square-move')
+                || current_square.hasClass('board-square-capture')
+                || current_square.hasClass('board-square-castling')
+            ) {
                 let selected_piece_id = getSquareChessPieceId(selected_square);
 
                 $.ajax({
@@ -216,6 +228,10 @@ $pieces = collect(Arr::get($chess_game, 'pieces', []));
                     }
                     for (let coordinates of data.captures.concat(data.en_passants)) {
                         getSelectorForCoordinates(coordinates).addClass('board-square-capture');
+                    }
+
+                    for (let coordinates of data.castlings) {
+                        getSelectorForCoordinates(coordinates).addClass('board-square-castling')
                     }
                 }
             });
