@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Http\Formatters;
 
 use App\Http\Formatters\ChessGameFormatter;
+use App\Models\Collections\ChessGameCollection;
 use Database\Factories\ChessGameFactory;
 use Database\Factories\ChessGamePieceMoveFactory;
 use Database\Factories\ChessGamePieceMovePromotionFactory;
@@ -13,9 +14,70 @@ use Tests\TestCase;
 
 class ChessGameFormatterTest extends TestCase
 {
+    public function testFormatStatusStarted(): void
+    {
+        $game = ChessGameFactory::new()->make();
+
+        $result = $this->getFormatter()->formatCollection(new ChessGameCollection([$game]));
+
+        $this->assertEquals('Started', Arr::get($result, '0.status'));
+    }
+
+    public function testFormatStatusDraw(): void
+    {
+        $game = ChessGameFactory::new()->make();
+
+        $move = ChessGamePieceMoveFactory::new()->draw()->make();
+
+        $game->moves->add($move);
+
+        $result = $this->getFormatter()->formatCollection(new ChessGameCollection([$game]));
+
+        $this->assertEquals('Draw', Arr::get($result, '0.status'));
+    }
+
+    public function testFormatStatusMate(): void
+    {
+        $game = ChessGameFactory::new()->make();
+
+        $move = ChessGamePieceMoveFactory::new()->moveIndex(1)->mate()->make();
+
+        $game->moves->add($move);
+
+        $result = $this->getFormatter()->formatCollection(new ChessGameCollection([$game]));
+
+        $this->assertEquals('Light Mate', Arr::get($result, '0.status'));
+    }
+
+    public function testFormatStatusCheck(): void
+    {
+        $game = ChessGameFactory::new()->make();
+
+        $move = ChessGamePieceMoveFactory::new()->moveIndex(2)->check()->make();
+
+        $game->moves->add($move);
+
+        $result = $this->getFormatter()->formatCollection(new ChessGameCollection([$game]));
+
+        $this->assertEquals('Dark Check', Arr::get($result, '0.status'));
+    }
+
+    public function testFormatStatusInProgress(): void
+    {
+        $game = ChessGameFactory::new()->make();
+
+        $move = ChessGamePieceMoveFactory::new()->make();
+
+        $game->moves->add($move);
+
+        $result = $this->getFormatter()->formatCollection(new ChessGameCollection([$game]));
+
+        $this->assertEquals('In progress', Arr::get($result, '0.status'));
+    }
+
     public function testFormatMovesMovement(): void
     {
-        $game = ChessGameFactory::new()->create();
+        $game = ChessGameFactory::new()->make();
 
         $movement = ChessGamePieceMoveFactory::new()
             ->king()
@@ -32,7 +94,7 @@ class ChessGameFormatterTest extends TestCase
 
     public function testFormatMovesCapture(): void
     {
-        $game = ChessGameFactory::new()->create();
+        $game = ChessGameFactory::new()->make();
 
         $movement = ChessGamePieceMoveFactory::new()
             ->previousCoordinates(1, 1)
@@ -95,7 +157,7 @@ class ChessGameFormatterTest extends TestCase
 
     public function testFormatMovesDraw(): void
     {
-        $game = ChessGameFactory::new()->create();
+        $game = ChessGameFactory::new()->make();
 
         $draw = ChessGamePieceMoveFactory::new()
             ->draw()
@@ -110,7 +172,7 @@ class ChessGameFormatterTest extends TestCase
 
     public function testFormatMovesCheck(): void
     {
-        $game = ChessGameFactory::new()->create();
+        $game = ChessGameFactory::new()->make();
 
         $check = ChessGamePieceMoveFactory::new()
             ->check()
@@ -125,7 +187,7 @@ class ChessGameFormatterTest extends TestCase
 
     public function testFormatMovesMate(): void
     {
-        $game = ChessGameFactory::new()->create();
+        $game = ChessGameFactory::new()->make();
 
         $mate = ChessGamePieceMoveFactory::new()
             ->mate()

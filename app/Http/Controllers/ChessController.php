@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;
 use App\Http\Formatters\ChessGameFormatter;
+use App\Http\Formatters\ChessPieceNameFormatter;
 use App\Http\Requests\MakeMoveRequest;
 use App\Http\Requests\StoreChessGameRequest;
 use App\Models\Collections\ChessGameCollection;
@@ -30,17 +31,20 @@ class ChessController extends Controller
     }
 
     public function show(
-        int $id,
-        ChessGameService $service,
-        ChessGameFormatter $formatter,
-        ChessPieceNameDictionary $chess_piece_dictionary
+        int                      $id,
+        ChessGameService         $service,
+        ChessPieceNameDictionary $chess_piece_dictionary,
+        ChessGameFormatter $game_formatter,
+        ChessPieceNameFormatter  $piece_name_formatter,
     ): View {
         $game = $service->getGameById($id);
 
         return view('chess-game.show', [
-            'chess_game'   => $formatter->formatOneWithRelations($game),
+            'chess_game' => $game_formatter->formatOne($game),
             'dictionaries' => [
-                'promotable_chess_piece_names' => $chess_piece_dictionary->all()->whereCanBePromotedTo()
+                'promotable_chess_piece_names' => $piece_name_formatter->formatCollection(
+                    $chess_piece_dictionary->all()->whereCanBePromotedTo()
+                ),
             ]
         ]);
     }

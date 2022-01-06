@@ -10,43 +10,27 @@
                 To Menu
             </a>
         </div>
-
     </div>
     <div class="row mt-2 mx-auto justify-content-center">
         <div class="col-auto">
             <div class="chess-board float-right">
-                @php
-                    $pieces = collect(Arr::get($chess_game, 'pieces', []));
-                @endphp
                 @for($vertical_coordinate = 8; $vertical_coordinate > 0; $vertical_coordinate--)
                     @for($horizontal_coordinate = 1; $horizontal_coordinate <= 8; $horizontal_coordinate++)
                         @php
                             $background = ($vertical_coordinate + $horizontal_coordinate) % 2 === 0 ? 'background-dark' : 'background-light';
-                            $chess_piece = $pieces->where('coordinates.x', $horizontal_coordinate)->where('coordinates.y', $vertical_coordinate)->first();
                         @endphp
                         <div class="board-square {{ $background }}"
                              data-coordinate-x="{{ $horizontal_coordinate }}"
                              data-coordinate-y="{{ $vertical_coordinate }}"
-                             @if ($chess_piece)
-                             data-chess-piece-id="{{ Arr::get($chess_piece, 'id') }}"
-                             data-chess-piece-color="{{ Arr::get($chess_piece, 'color') }}"
-                             data-chess-piece-name="{{Arr::get($chess_piece, 'name')}}"
-                            @endif
                         >
                         </div>
                     @endfor
                 @endfor
             </div>
         </div>
-        <div class="col-lg-3 move-history">
+        <div class="col-lg-3 ">
             <h5>Move history:</h5>
-            <div class="moves">
-                @foreach(Arr::get($chess_game, 'moves') as $move)
-                    <div class="w-auto">
-                        {{ $move }}
-                    </div>
-                @endforeach
-
+            <div class="move-history">
             </div>
         </div>
     </div>
@@ -59,25 +43,76 @@
                 </div>
                 <div class="modal-body">
                     @foreach(Arr::get($dictionaries, 'promotable_chess_piece_names') as $name)
-                        <button class="promote-pawn" data-name="{{ $name->name }}">
-                            <img src="/images/pieces/{{ \App\Dictionaries\ChessPieceColors\ChessPieceColorDictionary::DARK }}/{{$name->name}}.svg">
-                            {{ $name->title }}
+                        <button class="promote-pawn" data-name="{{ Arr::get($name, 'name') }}">
                         </button>
                     @endforeach
                 </div>
             </div>
         </div>
     </div>
+    <div class="d-none">
+    </div>
     <script>
         var promotion_move_square = null;
 
-        $('.board-square[data-chess-piece-id]').each(function () {
-            let piece_name = $(this).attr('data-chess-piece-name');
-            let color = $(this).attr('data-chess-piece-color');
-            let link = getChessPieceLink(piece_name, color);
-            let image = '<img src="' + link  + '">'
-            $(this).append($(image));
-        });
+        reloadGameData();
+
+        function reloadGameData() {
+            $.ajax({
+                url: '{{ route('chess-games.ajax.show', ['id' => Arr::get($chess_game, 'id')]) }}',
+                dataType: 'JSON',
+                success: function (data) {
+                    emptyGameTable();
+
+                    for (let piece of data.pieces) {
+                        let coordinates_selector =
+                            '[data-coordinate-x=' + piece.coordinates.x + ']' +
+                            '[data-coordinate-y=' + piece.coordinates.y + ']';
+
+                        let piece_square = $('.board-square' + coordinates_selector);
+                        piece_square
+                            .attr('data-chess-piece-id', piece.id)
+                            .attr('data-chess-piece-name', piece.name)
+                            .attr('data-chess-piece-color', piece.color)
+                    }
+
+                    for (let move of data.moves) {
+                        $('.move-history').append('<div>' + move + '</div>')
+                    }
+
+                    renderPieces();
+                },
+            });
+        }
+
+        function renderPieces() {
+            $('.board-square[data-chess-piece-id]').each(function () {
+                let piece_name = $(this).attr('data-chess-piece-name');
+                let color = $(this).attr('data-chess-piece-color');
+                let link = getChessPieceLink(piece_name, color);
+                let image = '<img src="' + link  + '">'
+                $(this).append($(image));
+            });
+        }
+
+        function emptyGameTable() {
+            removePieceMoveSquares();
+            $('.chess-board .board-square')
+                .removeAttr('data-chess-piece-id')
+                .removeAttr('data-chess-piece-name')
+                .removeAttr('data-chess-piece-color')
+                .html('');
+
+            $('.move-history').html('');
+        }
+
+        function removePieceMoveSquares() {
+            $('.chess-board .board-square')
+                .removeClass('board-square-selected')
+                .removeClass('board-square-move')
+                .removeClass('board-square-capture')
+                .removeClass('board-square-castling')
+        }
 
         $('.board-square').click(function () {
             let current_square = $(this);
@@ -89,13 +124,7 @@
             }
 
             if (current_square.hasClass('board-square-selected')) {
-                $('.chess-board .board-square')
-                    .removeClass('board-square-selected')
-                    .removeClass('board-square-move')
-                    .removeClass('board-square-capture')
-                    .removeClass('board-square-castling')
-                ;
-
+                removePieceMoveSquares();
                 return;
             }
 
@@ -110,7 +139,7 @@
                     method: 'POST',
                     data: getDataForSquare(current_square),
                     success: function () {
-                        location.reload();
+                        reloadGameData();
                     },
                     error: function (data) {
                         let errors = data.responseJSON.errors;

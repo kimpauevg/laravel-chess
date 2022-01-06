@@ -15,15 +15,28 @@
                             </button>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-2">
+                        </div>
+                        <div class="col-6">
+                            Name
+                        </div>
+                        <div class="col-4">
+                            Status
+                        </div>
+                    </div>
                     @foreach($chess_games as $i => $game)
                         <div class="row">
                             <div class="col-2 text-right">
                                 #{{ 1 + $i + Arr::get($pagination, 'per_page') * (Arr::get($pagination, 'current_page') - 1) }}
                             </div>
-                            <div class="col-9">
+                            <div class="col-6">
                                 <a href="{{ route('chess-games.show', ['id' => Arr::get($game, 'id')]) }}">
                                     {{ Arr::get($game, 'name') }}
                                 </a>
+                            </div>
+                            <div class="col-4">
+                                {{ Arr::get($game, 'status') }}
                             </div>
                         </div>
                     @endforeach

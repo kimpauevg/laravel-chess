@@ -47,9 +47,7 @@ class ChessGameServiceTest extends TestCase
 
         $game->moves->add($prev_move);
 
-        $this->mock(ChessGameBuilder::class, function (MockInterface $mock) use ($game) {
-            $mock->shouldReceive('findOrFail')->andReturn($game);
-        });
+        $this->mockGameSearch($game);
 
         /** @var ChessGameService $service */
         $service = $this->app->make(ChessGameService::class);

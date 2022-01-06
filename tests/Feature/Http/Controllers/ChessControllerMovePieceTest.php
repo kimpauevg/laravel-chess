@@ -36,6 +36,7 @@ class ChessControllerMovePieceTest extends TestCase
 
     public function testPawnPromotion(): void
     {
+        // arrange
         ChessGameFactory::new()->id(1)
             ->hasPieces(
                 ChessGamePieceFactory::new()->id(1)
@@ -44,6 +45,7 @@ class ChessControllerMovePieceTest extends TestCase
             )
             ->create();
 
+        // act
         $response = $this->post('/chess-games/1/piece/1/move', [
             'coordinates' => [
                 'x' => 1,
@@ -52,6 +54,7 @@ class ChessControllerMovePieceTest extends TestCase
             'promotion_to_piece_name' => ChessPieceNameDictionary::QUEEN,
         ]);
 
+        // assert
         $response->assertRedirect()->assertSessionHasNoErrors();
 
         $this->assertDatabaseHas(ChessGamePiece::TABLE, [

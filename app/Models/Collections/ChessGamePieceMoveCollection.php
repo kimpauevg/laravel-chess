@@ -42,12 +42,6 @@ class ChessGamePieceMoveCollection extends AbstractCollection
 
     public function whereColor(string $color): static
     {
-        $move_index_modulo = 0;
-
-        if ($color === ChessPieceColorDictionary::LIGHT) {
-            $move_index_modulo = 1;
-        }
-
-        return $this->filter(fn (ChessGamePieceMove $move) => $move->move_index % 2 === $move_index_modulo);
+        return $this->filter(fn (ChessGamePieceMove $move) => $move->color === $color);
     }
 }

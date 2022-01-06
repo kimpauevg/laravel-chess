@@ -17,6 +17,7 @@ use App\DTO\ChessPieceMoves;
 use App\DTO\Coordinates;
 use App\Models\Collections\ChessGamePieceMoveCollection;
 use App\Services\MovePerformers\DatabaseChessMovePerformer;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
@@ -29,9 +30,22 @@ class ChessGameService
         return $this->getBuilder()->with(['moves'])->orderBy('created_at')->paginate();
     }
 
+    /**
+     * @param int $id
+     * @return ChessGame
+     * @throws ModelNotFoundException
+     */
     public function getGameById(int $id): ChessGame
     {
         return $this->getBuilder()->findOrFail($id);
+    }
+
+    public function getGameByIdWithRelations(int $id): ChessGame
+    {
+        $game = $this->getGameById($id);
+        $game->load(['moves.promotion', 'pieces']);
+
+        return $game;
     }
 
     public function storeGame(array $attributes): ChessGame

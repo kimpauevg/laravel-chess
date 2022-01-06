@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Dictionaries\ChessPieceColors\ChessPieceColorDictionary;
 use App\Models\Builders\ChessGamePieceMoveBuilder;
 use App\Models\Collections\ChessGamePieceMoveCollection;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +25,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property bool $is_check
  * @property bool $is_mate
  * @property bool $is_draw
+ *
+ * @property string $color
  *
  * @property ChessGamePieceMovePromotion|null $promotion
  */
@@ -50,6 +53,15 @@ class ChessGamePieceMove extends Model
     public function promotion(): HasOne
     {
         return $this->hasOne(ChessGamePieceMovePromotion::class, 'move_id', 'id');
+    }
+
+    public function getColorAttribute(): string
+    {
+        if ($this->move_index % 2 === 0) {
+            return ChessPieceColorDictionary::DARK;
+        }
+
+        return ChessPieceColorDictionary::LIGHT;
     }
 
     public function newEloquentBuilder($query): ChessGamePieceMoveBuilder

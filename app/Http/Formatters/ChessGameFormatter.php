@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Formatters;
 
+use App\Dictionaries\ChessPieceColors\ChessPieceColorDictionary;
 use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;
 use App\Models\ChessGame;
 use App\Models\ChessGamePiece;
@@ -14,7 +15,8 @@ use Illuminate\Support\Collection;
 class ChessGameFormatter
 {
     public function __construct(
-        private ChessPieceNameDictionary $piece_name_dictionary
+        private ChessPieceNameDictionary $piece_name_dictionary,
+        private ChessPieceColorDictionary $piece_color_dictionary,
     ) {
     }
 
@@ -23,13 +25,38 @@ class ChessGameFormatter
         $result = [];
 
         foreach ($collection->all() as $chess_game) {
-            $result[] = [
-                'id'   => $chess_game->id,
-                'name' => $chess_game->name,
-            ];
+            $game_attributes = $this->getGameAttributes($chess_game);
+            $game_attributes['status'] = $this->getGameStatus($chess_game);
+
+            $result[] = $game_attributes;
         }
 
         return $result;
+    }
+
+    private function getGameStatus(ChessGame $game): string
+    {
+        $last_move = $game->moves->last();
+
+        if (is_null($last_move)) {
+            return 'Started';
+        }
+
+        if ($last_move->is_draw) {
+            return 'Draw';
+        }
+
+        $color_name = $this->piece_color_dictionary->all()->getById($last_move->color)->name;
+
+        if ($last_move->is_mate) {
+            return "$color_name Mate";
+        }
+
+        if ($last_move->is_check) {
+            return "$color_name Check";
+        }
+
+        return 'In progress';
     }
 
     public function formatOneWithRelations(ChessGame $game): array
@@ -40,6 +67,11 @@ class ChessGameFormatter
         $result['moves'] = $this->getChessGameMovesAttributes($game);
 
         return $result;
+    }
+
+    public function formatOne(ChessGame $game): array
+    {
+        return $this->getGameAttributes($game);
     }
 
     private function getGameAttributes(ChessGame $game): array

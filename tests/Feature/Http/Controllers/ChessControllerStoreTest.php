@@ -22,6 +22,11 @@ class ChessControllerStoreTest extends TestCase
             'name' => 'Test Game',
         ]);
 
+        $this->assertAllPiecesArePresent();
+    }
+
+    private function assertAllPiecesArePresent(): void
+    {
         /** @var ChessGamePieceBuilder $pieces_query */
         $pieces_query = app(ChessGamePieceBuilder::class);
         $pieces = $pieces_query->get();

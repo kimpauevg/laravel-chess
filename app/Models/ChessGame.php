@@ -50,23 +50,23 @@ class ChessGame extends Model
 
     public function getNextMoveChessPieceColor(): string
     {
-        $total_moves = $this->moves->count();
-
-        if ($total_moves % 2 === 0) {
-            return ChessPieceColorDictionary::LIGHT;
-        }
-
-        return ChessPieceColorDictionary::DARK;
-    }
-
-    public function getLastMoveChessPieceColor(): string
-    {
-        $next_move_color = $this->getNextMoveChessPieceColor();
+        $next_move_color = $this->getLastMoveChessPieceColor();
 
         if ($next_move_color === ChessPieceColorDictionary::LIGHT) {
             return ChessPieceColorDictionary::DARK;
         }
 
         return ChessPieceColorDictionary::LIGHT;
+    }
+
+    public function getLastMoveChessPieceColor(): string
+    {
+        $last_move = $this->moves->last();
+
+        if (is_null($last_move)) {
+            return ChessPieceColorDictionary::DARK;
+        }
+
+        return $last_move->color;
     }
 }
