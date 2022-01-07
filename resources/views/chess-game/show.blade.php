@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="select-promotion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="select-promotion" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content modal-content-dark">
                 <div class="modal-header">

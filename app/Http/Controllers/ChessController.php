@@ -40,7 +40,7 @@ class ChessController extends Controller
         $game = $service->getGameById($id);
 
         return view('chess-game.show', [
-            'chess_game' => $game_formatter->formatOne($game),
+            'chess_game'   => $game_formatter->formatOne($game),
             'dictionaries' => [
                 'promotable_chess_piece_names' => $piece_name_formatter->formatCollection(
                     $chess_piece_dictionary->all()->whereCanBePromotedTo()

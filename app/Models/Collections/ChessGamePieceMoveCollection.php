@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models\Collections;
 
-use App\Dictionaries\ChessPieceColors\ChessPieceColorDictionary;
 use App\Dictionaries\ChessPieceNames\ChessPieceNameDictionary;
 use App\Models\ChessGamePieceMove;
 

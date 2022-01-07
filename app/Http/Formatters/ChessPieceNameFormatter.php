@@ -22,8 +22,8 @@ class ChessPieceNameFormatter
     private function formatOne(ChessPieceNameEntity $piece_name): array
     {
         return [
-            'name' => $piece_name->name,
-            'title' => $piece_name->title,
+            'name'   => $piece_name->name,
+            'title'  => $piece_name->title,
             'symbol' => $piece_name->symbol,
         ];
     }

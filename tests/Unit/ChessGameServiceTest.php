@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Models\Builders\ChessGameBuilder;
 use App\Models\ChessGame;
 use App\Services\ChessGameService;
 use Database\Factories\ChessGamePieceFactory;
 use Database\Factories\ChessGamePieceMoveFactory;
-use Mockery\MockInterface;
 use Tests\TestCase;
 
 class ChessGameServiceTest extends TestCase
